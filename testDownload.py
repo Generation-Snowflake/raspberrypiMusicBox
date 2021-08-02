@@ -9,14 +9,8 @@ r = requests.get(url,allow_redirects=True)
 
 dicTest = r.json()["loop1"]
 
-
 for i in len(dicTest["break1"]):
     print(dicTest["break1"][i])
-
-
-
-
-
 
 #{'loop1': 
 # {'break1': [
@@ -25,7 +19,8 @@ for i in len(dicTest["break1"]):
 # {'sound': 'EdSheeran-ShapeofYou.mp3', 'duration': '00:04.23'}, 
 # {'sound': 'EdSheeran-ShapeofYou.mp3', 'duration': '00:04.23'}, 
 # {'sound': 'Maroon5-Sugar.mp3', 'duration': '00:05.01'}], 
-# 'break2': [{'sound': 'OneRepublic-CountingStars.mp3', 'duration': '00:04.43'}, 
+# 'break2': [
+# {'sound': 'OneRepublic-CountingStars.mp3', 'duration': '00:04.43'}, 
 # {'sound': 'COVERALLYxTwoPopetorn-LikeImGonnaLoseYou.mp3', 'duration': '00:04.13'}, 
 # {'sound': 'Anne-Marie-2002.mp3', 'duration': '00:03.14'}, 
 # {'sound': 'TaylorSwift-YouBelongWithMe.mp3', 'duration': '00:03.48'}]}}

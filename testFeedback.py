@@ -33,7 +33,6 @@ print(x.text)
 # install package for speedtest 
 # pip install speedtest-cli
 
-
 path = '/'
 bytes_avail = psutil.disk_usage(path).free
 gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
