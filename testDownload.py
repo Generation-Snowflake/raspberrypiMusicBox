@@ -3,11 +3,20 @@ import json
 url = 'http://128.199.247.96:3000/api/music/getmusicloop'  #playlist URL http://128.199.247.96:3000/api/music
 r = requests.get(url,allow_redirects=True)
 
-# r = str(r.content).split(",")  # split each song to list
+#r = str(r.content).split(",")  # split each song to list
 
-#python_obj = json.loads(r.json())
+# python_obj = json.loads(r.json())
 
-# for url in python_obj['']
+dicTest = r.json()["loop1"]
+
+
+for i in len(dicTest["break1"]):
+    print(dicTest["break1"][i])
+
+
+
+
+
 
 #{'loop1': 
 # {'break1': [
@@ -23,4 +32,3 @@ r = requests.get(url,allow_redirects=True)
 
 
 
-print(r.json())
