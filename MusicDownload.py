@@ -10,8 +10,9 @@ playlist = requests.get(url,allow_redirects=True)
 playlist = str(playlist.content).split(',')
 
 playlist_lst = str(playlist).split('"')
-playlist_lst.pop(playlist_lst.index("['b\'["))
-playlist_lst.pop(playlist_lst.index("]\'']"))
+playlist_lst.pop(playlist_lst.index("['b\\'["))
+playlist_lst.pop(playlist_lst.index("]\\'']"))
+
 for i,enum in enumerate(playlist_lst):
     if enum == "', '":
         playlist_lst.pop(i)
