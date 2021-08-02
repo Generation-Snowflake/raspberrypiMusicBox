@@ -4,31 +4,31 @@ import speedtest
 #for check space 
 import psutil
 
-# url = 'https://api.dv8automate.com/api/player/box/feedback' 
-# r = requests.get(url,allow_redirects=True)
+url = 'https://api.dv8automate.com/api/player/box/feedback' 
+r = requests.get(url,allow_redirects=True)
 
-# print(r.content)
-# # open('Sunkissed.mp3',('wb')).write(r.content)
+print(r.content)
+# open('Sunkissed.mp3',('wb')).write(r.content)
 
 now = datetime.now()
 print(now)
-#st = speedtest.Speedtest()
-#netSpeed = st.download()
-#print(netSpeed)
+st = speedtest.Speedtest()
+netSpeed = st.download()
+print(netSpeed)
 
-# url = 'https://api.dv8automate.com/api/player/box/feedback'
-# myobj = {
-#     'serialNumber':'10000000ce768306',
-#     'freeSpace':'55',
-#     'statusBox': 'offline',
-#     'speedNet':netSpeed,
-#     'startPlayTime':now,
-#     'currentVolume':40
-#     }
+url = 'https://api.dv8automate.com/api/player/box/feedback'
+myobj = {
+    'serialNumber':'10000000ce768306',
+    'freeSpace':'55',
+    'statusBox': 'offline',
+    'speedNet':netSpeed,
+    'startPlayTime':now,
+    'currentVolume':40
+    }
 
-# x = requests.post(url, data = myobj)
+x = requests.post(url, data = myobj)
 
-# print(x.text)
+print(x.text)
 
 # install package for speedtest 
 # pip install speedtest-cli
