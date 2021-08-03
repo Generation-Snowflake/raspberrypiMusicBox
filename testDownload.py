@@ -7,6 +7,10 @@ import speedtest
 import psutil
 from tqdm import tqdm
 import os
+import os
+import pygame
+import datetime
+import threading
 
 # url = 'http://128.199.247.96:3000/api/music/getmusicloop'  #playlist URL http://128.199.247.96:3000/api/music
 # r = requests.get(url,allow_redirects=True)
@@ -33,6 +37,8 @@ def getserial():
 
   return cpuserial
 
+pygame.init()
+pygame.mixer.init()
 
 
 while True:
@@ -42,28 +48,28 @@ while True:
         r = requests.get(url,allow_redirects=True)
     except ValueError:
         print(ValueError)
+    #print(r.json()['loop1'])
 
+    if str(r.json()['download']) == "True":
+        if os.path.isdir('playlist') == False:
+            os.mkdir('playlist')
 
-    # if str(r.json()['download']) == "True":
-    #     if os.path.isdir('playlist') == False:
-    #         os.mkdir('playlist')
+        url = 'http://128.199.247.96:3000/api/music'
+        playlist = requests.get(url,allow_redirects=True)
+        playlist = str(playlist.content).split(',')
 
-    #     url = 'http://128.199.247.96:3000/api/music'
-    #     playlist = requests.get(url,allow_redirects=True)
-    #     playlist = str(playlist.content).split(',')
+        playlist_lst = str(playlist).split('"')
+        playlist_lst.pop(playlist_lst.index("['b\\'["))
+        playlist_lst.pop(playlist_lst.index("]\\'']"))
 
-    #     playlist_lst = str(playlist).split('"')
-    #     playlist_lst.pop(playlist_lst.index("['b\\'["))
-    #     playlist_lst.pop(playlist_lst.index("]\\'']"))
+        for i,enum in enumerate(playlist_lst):
+            if enum == "', '":
+                playlist_lst.pop(i)
 
-    #     for i,enum in enumerate(playlist_lst):
-    #         if enum == "', '":
-    #             playlist_lst.pop(i)
-
-    #     for j in tqdm(range (0,len(playlist_lst))):
-    #         music = playlist_lst[j].split('/')
-    #         music_download = requests.get(playlist_lst[j],allow_redirects=True)
-    #         open('playlist/'+music[-1],('wb')).write(music_download.content)
+        for j in tqdm(range (0,len(playlist_lst))):
+            music = playlist_lst[j].split('/')
+            music_download = requests.get(playlist_lst[j],allow_redirects=True)
+            open('playlist/'+music[-1],('wb')).write(music_download.content)
 
     #get free space 
     path = '/'
@@ -77,12 +83,15 @@ while True:
     #print()
     # for i in len(int(r.json()['loop1']['break1']))/2:
     #     print(r.json()['loop1']['break1'][i])
-    print(r.json()['loop1']['break1'][1])
+    print(r.json()['loop1']['break1'][1]['sound'])
+
+    pygame.mixer.music.load("playlist/"+r.json()['loop1']['break1'][1]['sound'])
+
     # print(r.json()['download'])
     # print(r.json()['command'])
     #print(len(r.json()['loop1']['break1']))
-    print(str(r.json()))
-    now = datetime.now()
+   # print(str(r.json()))
+    now = datetime.datetime.now()
 
     url = 'https://api.dv8automate.com/api/player/box/feedback'
     myobj = {
