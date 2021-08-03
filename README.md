@@ -12,3 +12,8 @@ pip install speedtest
 pip install psutil
 pip install requests
 pip install tqdm
+
+# # install package for speedtest 
+# # pip install speedtest-cli
+
+## pip install pygame

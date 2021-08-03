@@ -4,36 +4,53 @@ import speedtest
 #for check space 
 import psutil
 
-url = 'https://api.dv8automate.com/api/player/box/feedback' 
-r = requests.get(url,allow_redirects=True)
+class speedTest:
+    def speedTest():
+        now = datetime.now()
+        print(now)
+        st = speedtest.Speedtest()
+        netSpeed = st.download()
 
-print(r.content)
-# open('Sunkissed.mp3',('wb')).write(r.content)
+def getserial():
+  # Extract serial from cpuinfo file
+  cpuserial = "0000000000000000"
+  try:
+    f = open('/proc/cpuinfo','r')
+    for line in f:
+      if line[0:6]=='Serial':
+        cpuserial = line[10:26]
+    f.close()
+  except:
+    cpuserial = "ERROR000000000"
+
+  return cpuserial
+
 
 now = datetime.now()
-print(now)
-st = speedtest.Speedtest()
-netSpeed = st.download()
-print(netSpeed)
 
-url = 'https://api.dv8automate.com/api/player/box/feedback'
-myobj = {
-    'serialNumber':'10000000ce768306',
-    'freeSpace':'55',
-    'statusBox': 'offline',
-    'speedNet':netSpeed,
-    'startPlayTime':now,
-    'currentVolume':40
-    }
 
-x = requests.post(url, data = myobj)
+# print(now)
+# st = speedtest.Speedtest()
+# netSpeed = st.download()
+# print(netSpeed)
 
-print(x.text)
+# url = 'https://api.dv8automate.com/api/player/box/feedback'
+# myobj = {
+#     'serialNumber':'10000000ce768306',
+#     'freeSpace':'55',
+#     'statusBox': 'offline',
+#     'speedNet':spdTest,
+#     'startPlayTime':now,
+#     'currentVolume':40
+#     }
 
-# install package for speedtest 
-# pip install speedtest-cli
+# x = requests.post(url, data = myobj)
 
-path = '/'
-bytes_avail = psutil.disk_usage(path).free
-gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
-print("freespace = " + str(gigabytes_avail))
+#print(x.text)
+
+
+
+# path = '/'
+# bytes_avail = psutil.disk_usage(path).free
+# gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
+# print("freespace = " + str(gigabytes_avail))
