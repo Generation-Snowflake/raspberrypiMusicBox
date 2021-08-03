@@ -12,6 +12,7 @@ playlist = str(playlist.content).split(',')
 playlist_lst = str(playlist).split('"')
 playlist_lst.pop(playlist_lst.index("['b\\'["))
 playlist_lst.pop(playlist_lst.index("]\\'']"))
+#print()
 
 for i,enum in enumerate(playlist_lst):
     if enum == "', '":

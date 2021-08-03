@@ -83,9 +83,11 @@ while True:
     #print()
     # for i in len(int(r.json()['loop1']['break1']))/2:
     #     print(r.json()['loop1']['break1'][i])
-    print(r.json()['loop1']['break1'][1]['sound'])
+   # print(r.json()['loop1']['break1'][1]['sound'])
+    print(r.json())
 
-    pygame.mixer.music.load("playlist/"+r.json()['loop1']['break1'][1]['sound'])
+    #pygame.mixer.music.load("playlist/"+r.json()['loop1']['break1'][1]['sound'])
+    #pygame.mixer.music.play()
 
     # print(r.json()['download'])
     # print(r.json()['command'])
