@@ -5,7 +5,7 @@ import json
 import time
 from datetime import datetime
 from requests.api import request
-import speedtest
+#import speedtest
 #for check space 
 import psutil
 from tqdm import tqdm
@@ -14,6 +14,11 @@ import pygame
 
 pygame.init()
 pygame.mixer.init()
+r_old = {}
+triger = ""
+b_trg = False
+
+
 
 #my_queue = queue.Queue()
 
@@ -23,14 +28,37 @@ class NineThread(threading.Thread):
         self.stopped = event
 
     def run(self):
+        global r_old
+        global triger
+        global b_trg
+        #while True:
         while not self.stopped.wait(1.0):
             try:
                 url = 'http://128.199.247.96:3000/api/music/getmusicloop'
                 r = requests.get(url,allow_redirects=True)
-                print('kn')
-                return r
-            except ValueError:
-                print(ValueError)
+                print("Loading")
+                print(r.text)
+                print(str(r.json()['command']))
+                
+                # if r_old == {}:
+                #     r_old = r.text
+
+                # elif r_old!=r.text:
+                #     print('kn')
+                #     r_old = r.text
+
+                if triger == "":
+                    triger = str(r.json()['command'])
+                elif triger != str(r.json()['command']):
+                    print('Triger')
+                    triger = str(r.json()['command'])
+                    b_trg != b_trg
+
+
+                #return r
+            except:
+                print("some error...")
+        print(r.json())
         
 
 class ClockThread(threading.Thread):
@@ -129,29 +157,29 @@ if __name__ == "__main__":
     thread = NineThread(stopFlag)
     thread.start()
 
-    stopFlag = threading.Event()
-    thread2 = ClockThread(stopFlag)
-    thread2.start()
+    # stopFlag = threading.Event()
+    # thread2 = ClockThread(stopFlag)
+    # thread2.start()
 
     
     #timee = my_queue.get()
     #print(timee)
 
-    music_list1=[]
+    music_list=[]
     music_list2=[]
     music_list3=[]
     music_list4=[]
     music_list5=[]
     music_list6=[]
     
-    print(thread.run().json()['loop1']['break1'])
+    #print(thread.run().json()['loop1']['break1'])
 
-    for j in range (1,7):
-        for i in thread.run().json()['loop1']['break'+str(j)]:
-            music_list1.append(i['sound'])
+    #for j in range (1,7):
+    for i in thread.run().json()['loop1']['break1']:#+str(j)
+        music_list.append(i['sound'])
 
-        print('-----------')
-    
+    #print('-----------')
+    print(music_list)
     #pygame.mixer.music.load("01.Lotus_sVisa10(01-15Aug21).mp3")
 
     pygame.mixer.music.load("playlist/" + music_list.pop(0))
@@ -161,11 +189,22 @@ if __name__ == "__main__":
 
     running = True
     while running:
-        
+        if b_trg != b_trg:
+            for j in range (1,7):
+                for i in thread.run().json()['loop1']['break1']:#+str(j)
+                    music_list.append(i['sound'])
+
+            pygame.mixer.music.load("playlist/" + music_list.pop(0))
+            pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+            pygame.mixer.music.set_endevent(pygame.USEREVENT)
+            pygame.mixer.music.play()
+            print("Play again")
         for event in pygame.event.get():
+
             if event.type == pygame.USEREVENT:    
                 if len ( music_list ) > 0:       
                     pygame.mixer.music.queue ( "playlist/" +music_list.pop(0) )
+               # print('aa')
 
     # pygame.mixer.music.load ( playlist.pop(0) )  # Get the first track from the playlist
     # pygame.mixer.music.queue ( playlist.pop(0) ) # Queue the 2nd song
