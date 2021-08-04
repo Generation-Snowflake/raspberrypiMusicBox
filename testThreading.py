@@ -17,6 +17,8 @@ pygame.mixer.init()
 r_old = {}
 triger = ""
 b_trg = False
+a_trg = False
+r_test = []
 
 
 
@@ -30,15 +32,18 @@ class NineThread(threading.Thread):
     def run(self):
         global r_old
         global triger
-        global b_trg
+        global b_trg  
+        global a_trg
+        global r_test
         #while True:
-        while not self.stopped.wait(1.0):
+        while not self.stopped.wait(10.0):
             try:
                 url = 'http://128.199.247.96:3000/api/music/getmusicloop'
                 r = requests.get(url,allow_redirects=True)
-                print("Loading")
-                print(r.text)
-                print(str(r.json()['command']))
+                r_test = r.json()['loop1']['break1']
+                #print("Loading")
+                #print(r.text)
+                #print(str(r.json()['command']))
                 
                 # if r_old == {}:
                 #     r_old = r.text
@@ -50,15 +55,15 @@ class NineThread(threading.Thread):
                 if triger == "":
                     triger = str(r.json()['command'])
                 elif triger != str(r.json()['command']):
-                    print('Triger')
+                    #print('Triger')
                     triger = str(r.json()['command'])
-                    b_trg != b_trg
-
+                    a_trg = b_trg
+                    b_trg = not b_trg
 
                 #return r
             except:
                 print("some error...")
-        print(r.json())
+        #print(r.json())
         
 
 class ClockThread(threading.Thread):
@@ -134,24 +139,13 @@ def send_feedback():
             }
     requests.post(url, data = myobj)
 
-
-
-def print_cube(num):
-
-	"""
-	function to print cube of given num
-	"""
-	print("Cube: {}".format(num * num * num))
-
-def print_square(num):
-	"""
-	function to print square of given num
-	"""
-	print("Square: {}".format(num * num))
-
 if __name__ == "__main__":
 
     #r = NineThread().run()
+    url = 'http://128.199.247.96:3000/api/music/getmusicloop'
+    r = requests.get(url,allow_redirects=True)
+    r_test = r.json()['loop1']['break1']
+
 
     stopFlag = threading.Event()
     thread = NineThread(stopFlag)
@@ -160,8 +154,7 @@ if __name__ == "__main__":
     # stopFlag = threading.Event()
     # thread2 = ClockThread(stopFlag)
     # thread2.start()
-
-    
+    #print('ssss')
     #timee = my_queue.get()
     #print(timee)
 
@@ -173,32 +166,37 @@ if __name__ == "__main__":
     music_list6=[]
     
     #print(thread.run().json()['loop1']['break1'])
+   
 
     #for j in range (1,7):
-    for i in thread.run().json()['loop1']['break1']:#+str(j)
+    for i in r_test:#+str(j)  # thread.run().json()['loop1']['break1']
         music_list.append(i['sound'])
 
+
     #print('-----------')
-    print(music_list)
+    #print(music_list)
     #pygame.mixer.music.load("01.Lotus_sVisa10(01-15Aug21).mp3")
 
     pygame.mixer.music.load("playlist/" + music_list.pop(0))
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     pygame.mixer.music.play()
-
+    #print("Play first")
     running = True
     while running:
-        if b_trg != b_trg:
-            for j in range (1,7):
-                for i in thread.run().json()['loop1']['break1']:#+str(j)
-                    music_list.append(i['sound'])
-
+        if a_trg != b_trg:
+            pygame.mixer.music.stop()
+            music_list=[]
+            time.sleep(1)
+            for i in r_test:#+str(j)
+                music_list.append(i['sound'])
+            #print(music_list)
             pygame.mixer.music.load("playlist/" + music_list.pop(0))
-            pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+            #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
             pygame.mixer.music.play()
-            print("Play again")
+            #print("Play again")
+            a_trg = b_trg
         for event in pygame.event.get():
 
             if event.type == pygame.USEREVENT:    
