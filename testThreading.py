@@ -183,7 +183,7 @@ if __name__ == "__main__":
     pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     pygame.mixer.music.play()
-    #print("Play first")
+    print("Play first")
     running = True
     while running:
         if a_trg != b_trg:
@@ -192,13 +192,18 @@ if __name__ == "__main__":
             time.sleep(1)
             for i in r_test:#+str(j)
                 music_list.append(i['sound'])
+<<<<<<< HEAD
 	#print('play again')
             print(music_list)
             pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
+=======
+            print(music_list)
+            pygame.mixer.music.load("playlist/" + music_list.pop(0))
+>>>>>>> 11229e0280322a58182c2f757c0001de6ff216bd
             #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
             pygame.mixer.music.play()
-            #print("Play again")
+            print("Play again")
             a_trg = b_trg
         for event in pygame.event.get():
 
