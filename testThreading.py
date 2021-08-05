@@ -8,9 +8,11 @@ from requests.api import request
 #import speedtest
 #for check space 
 import psutil
-from tqdm import tqdm
+#from tqdm import tqdm
 import os
 import pygame
+
+time.sleep(60)
 
 pygame.init()
 pygame.mixer.init()
@@ -118,7 +120,7 @@ def download_music(r):
             if enum == "', '":
                 playlist_lst.pop(i)
 
-        for j in tqdm(range (0,len(playlist_lst))):
+        for j in range (0,len(playlist_lst)):
             music = playlist_lst[j].split('/')
             music_download = requests.get(playlist_lst[j],allow_redirects=True)
             open('playlist/'+music[-1],('wb')).write(music_download.content)
@@ -174,11 +176,11 @@ if __name__ == "__main__":
 
 
     #print('-----------')
-    #print(music_list)
+    print(music_list)
     #pygame.mixer.music.load("01.Lotus_sVisa10(01-15Aug21).mp3")
 
-    pygame.mixer.music.load("playlist/" + music_list.pop(0))
-    pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+    pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
+    pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     pygame.mixer.music.play()
     #print("Play first")
@@ -190,8 +192,9 @@ if __name__ == "__main__":
             time.sleep(1)
             for i in r_test:#+str(j)
                 music_list.append(i['sound'])
-            #print(music_list)
-            pygame.mixer.music.load("playlist/" + music_list.pop(0))
+	#print('play again')
+            print(music_list)
+            pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
             #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
             pygame.mixer.music.play()
@@ -201,7 +204,7 @@ if __name__ == "__main__":
 
             if event.type == pygame.USEREVENT:    
                 if len ( music_list ) > 0:       
-                    pygame.mixer.music.queue ( "playlist/" +music_list.pop(0) )
+                    pygame.mixer.music.queue ( "/home/pi/raspberrypiMusicBox/playlist/" +music_list.pop(0) )
                # print('aa')
 
     # pygame.mixer.music.load ( playlist.pop(0) )  # Get the first track from the playlist
