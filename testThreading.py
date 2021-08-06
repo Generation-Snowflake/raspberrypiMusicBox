@@ -50,8 +50,8 @@ class NineThread(threading.Thread):
                 r = requests.get(url,allow_redirects=True)
                 r_test = r.json()['data']
                 d_test = r.json()['download']
-                sd_test = r.jason()['startDate']
-                ed_test = r.jason()['endDate']
+                sd_test = r.json()['startDate']
+                ed_test = r.json()['endDate']
 
                 if triger == "":
                     triger = str(r.json()['command'])
@@ -79,6 +79,7 @@ class ClockThread(threading.Thread):
             #my_queue.put(hour)
         return hour, min
 
+
 def getserial():
     cpuserial = "0000000000000000"
     try:
@@ -92,6 +93,7 @@ def getserial():
 
     return cpuserial
 
+
 # def update_playlist():
 #     try:
 #         url = 'http://128.199.247.96:3000/api/music/getmusicloop'
@@ -99,7 +101,8 @@ def getserial():
 #     except ValueError:
 #         print(ValueError)
 #     print('nine')
-#     return r
+#     return 
+
 
 def download_music(r):
     if str(r.json()['download']) == "True":
@@ -141,11 +144,9 @@ def send_feedback():
 
 if __name__ == "__main__":
 
-    #r = NineThread().run()
     url = 'http://128.199.247.96:3000/api/music/getmusicloop'
     r = requests.get(url,allow_redirects=True)
     r_test = r.json()['data']['loop1']['break1']
-
 
     stopFlag = threading.Event()
     thread = NineThread(stopFlag)
@@ -164,18 +165,13 @@ if __name__ == "__main__":
     music_list4=[]
     music_list5=[]
     music_list6=[]
-    
-    #print(thread.run().json()['loop1']['break1'])
-   
 
     #for j in range (1,7):
     for i in r_test:#+str(j)  # thread.run().json()['loop1']['break1']
         music_list.append(i['sound'])
 
-
     #print('-----------')
     print(music_list)
-    #pygame.mixer.music.load("01.Lotus_sVisa10(01-15Aug21).mp3")
 
     #-----------directory for pi--------------
     # pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
