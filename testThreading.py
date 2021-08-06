@@ -202,7 +202,7 @@ if __name__ == "__main__":
     #print(timee)
 
     music_list=[]
-    loop_list=[]##
+    music_list_all=[]
     music_list3=[]##
     music_list4=[]##
     music_list5=[]##
@@ -238,6 +238,7 @@ if __name__ == "__main__":
                     music_list.append(m['sound'])
                 
     print(music_list)
+
 
     #-----------directory for pi--------------
     # pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
@@ -282,5 +283,5 @@ if __name__ == "__main__":
     #                 #-----------directory form pc--------------
     #                 pygame.mixer.music.queue("playlist/" + music_list.pop(0))
 
-    #            # print('aa')
+               # print('aa')
     print("--- %s seconds ---" % (time.time() - start_time)) #show time
