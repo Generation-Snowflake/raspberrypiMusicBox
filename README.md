@@ -1,25 +1,24 @@
 # raspberrypiMusicBox
 Project to make raspberry pi 4 like music box can command the playlist from every where.....
 
-#for mopidy
+# For mopidy
 install mopidy for raspberry pi
 
 pip install Mopidy
 sudo apt-get install python3-gi
 
-#install this pkg
-#pip3 install speedtest
-#pip3 install psutil
-#pip3 install requests
-#pip3 install tqdm
+# install this pkg
 
-#python3 -m pip install pygame==2.0.1
+``` pip3 install psutil ```
 
-#sudo apt-get install git curl libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 libsdl2-ttf-2.0-0
+``` pip3 install requests ```
 
-# # install package for speedtest 
-# # pip3 install speedtest-cli
+``` pip3 install tqdm ```
 
-## pip3 install pygame
+``` python3 -m pip install pygame==2.0.1```
 
-#pip3 install pause
+``` pip3 install speedtest-cli```
+
+```sudo apt-get install git curl libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 libsdl2-ttf-2.0-0```
+
+```pip3 install pause```
