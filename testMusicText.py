@@ -65,50 +65,52 @@ if __name__ == "__main__":
     with open('music.json') as f:
         data = json.load(f)
 
-    print(data['data'])
+    print(data['data']['loop1']['break1'])
 
+    loop_count = 1
+    break_count = 1
 
-    # for i in range (loop_count,24):
-    #     if str(i) == str(loop_count):
-    #         for j in range(int(b_interval[0]),7):
-    #             for l in r_test['loop'+str(loop_count)]['break'+str(j)]:
-    #                 music_list.append(l['sound']) 
-    #     else:
-    #         for k in r_test['loop'+str(i)]:
-    #             for m in r_test['loop'+str(i)][str(k)]:
-    #                 music_list.append(m['sound'])
+    for i in range (loop_count,24):
+        if i == loop_count:
+            for j in range(break_count,7):
+                for l in data['data']['loop'+str(loop_count)]['break'+str(break_count)]:
+                    music_list.append(l['sound']) 
+        else:
+            for k in data['data']['loop'+str(i)]:
+                for m in data['data']['loop'+str(i)][k]:
+                    music_list.append(m['sound'])
                 
-    # print(music_list)
+    print(music_list)
 
 
-    # pygame.mixer.music.load("playlist/" + music_list.pop(0))
-    # pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+    pygame.mixer.music.load("playlist/" + music_list.pop(0))
+    pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
 
-    # pygame.mixer.music.set_endevent(pygame.USEREVENT)
-    # pygame.mixer.music.play()
-    # print("Play first")
-    # running = True
-    # while running:
-    #     if a_trg != b_trg:
-    #         pygame.mixer.music.stop()
-    #         music_list=[]
-    #         time.sleep(1)
-    #         for i in r_test:#+str(j)
-    #             music_list.append(i['sound'])
+    pygame.mixer.music.set_endevent(pygame.USEREVENT)
+    pygame.mixer.music.play()
+    print("Play first")
+    running = True
+    while running:
+        if a_trg != b_trg:
+            pygame.mixer.music.stop()
+            music_list=[]
+            time.sleep(1)
+            for i in r_test:#+str(j)
+                music_list.append(i['sound'])
 
-    #         print(music_list)
+            print(music_list)
 
-    #         pygame.mixer.music.load("playlist/" + music_list.pop(0))
-    #         #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
-    #         pygame.mixer.music.set_endevent(pygame.USEREVENT)
-    #         pygame.mixer.music.play()
-    #         print("Play again")
-    #         a_trg = b_trg
-    #     for event in pygame.event.get():
+            pygame.mixer.music.load("playlist/" + music_list.pop(0))
+            #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+            pygame.mixer.music.set_endevent(pygame.USEREVENT)
+            pygame.mixer.music.play()
+            print("Play again")
+            a_trg = b_trg
+        for event in pygame.event.get():
 
-    #         if event.type == pygame.USEREVENT:    
-    #             if len ( music_list ) > 0:
-    #                 pygame.mixer.music.queue("playlist/" + music_list.pop(0))
+            if event.type == pygame.USEREVENT:    
+                if len ( music_list ) > 0:
+                    pygame.mixer.music.queue("playlist/" + music_list.pop(0))
 
     #            # print('aa')
     print("--- %s seconds ---" % (time.time() - start_time)) #show time
