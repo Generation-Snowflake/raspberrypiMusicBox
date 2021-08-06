@@ -8,16 +8,18 @@ pip install Mopidy
 sudo apt-get install python3-gi
 
 #install this pkg
-#pip install speedtest
-#pip install psutil
-#pip install requests
-#pip install tqdm
+#pip3 install speedtest
+#pip3 install psutil
+#pip3 install requests
+#pip3 install tqdm
 
 #python3 -m pip install pygame==2.0.1
 
 #sudo apt-get install git curl libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 libsdl2-ttf-2.0-0
 
 # # install package for speedtest 
-# # pip install speedtest-cli
+# # pip3 install speedtest-cli
 
-## pip install pygame
+## pip3 install pygame
+
+#pip3 install pause

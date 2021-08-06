@@ -11,6 +11,7 @@ import psutil
 #from tqdm import tqdm
 import os
 import pygame
+import pause
 
 #---------- Show Run time----------
 import time
@@ -119,6 +120,7 @@ def download_music(d_test):
             music = playlist_lst[j].split('/')
             music_download = requests.get(playlist_lst[j],allow_redirects=True)
             open('playlist/'+music[-1],('wb')).write(music_download.content)
+    else: return None
 
 
 def send_feedback():
@@ -203,7 +205,7 @@ if __name__ == "__main__":
     #print(timee)
 
     music_list=[]
-    music_list_all=[]
+    music_list_all=[]##
     music_list3=[]##
     music_list4=[]##
     music_list5=[]##
@@ -215,9 +217,7 @@ if __name__ == "__main__":
     
     b_interval = interval_loop60(int(mins))
 
-    print(('break'+b_interval[0]))##
-
-    print('-----------')##
+    
     #print(r_test['loop1'])##
 
     # for i in r_test['loop'+hour][(b_interval[0])]:##
@@ -227,6 +227,10 @@ if __name__ == "__main__":
     else:
         loop_count = int(hour)+1
 
+    print('loop'+str(loop_count))
+    print(('break'+b_interval[0]))##
+
+    print('-----------')##
 
     for i in range (loop_count,24):
         if str(i) == str(loop_count):
@@ -250,7 +254,8 @@ if __name__ == "__main__":
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     
-    
+    pause.until(datetime(2021, 8, 7, (loop_count - 1), b_interval[1], 00))
+
     pygame.mixer.music.play()
     print("Play first")
     running = True
@@ -262,7 +267,7 @@ if __name__ == "__main__":
             for i in r_test:#+str(j)
                 music_list.append(i['sound'])
 
-            #print('play again')
+            #print('play again')##
             print(music_list)
             #-----------directory for pi--------------
             #pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
@@ -273,7 +278,7 @@ if __name__ == "__main__":
             #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
             pygame.mixer.music.play()
-            print("Play again")
+            print("Play again")##
             a_trg = b_trg
         for event in pygame.event.get():
 
@@ -286,4 +291,4 @@ if __name__ == "__main__":
                     pygame.mixer.music.queue("playlist/" + music_list.pop(0))
 
                # print('aa')
-    print("--- %s seconds ---" % (time.time() - start_time)) #show time
+    print("--- %s seconds ---" % (time.time() - start_time)) #show time ##
