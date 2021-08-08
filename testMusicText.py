@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
     print(d_test)##
     print('-----------')##
-    print(sd_test)##
+    print(sd_test[-2:])##
     print('-----------')##
     print(ed_test)##
     print('-----------')##
@@ -127,18 +127,23 @@ if __name__ == "__main__":
     time_now = datetime.now()
     s_hour = int(time_now.strftime('%H'))
     s_mins = time_now.strftime('%M')
+    s_day = int(time_now.strftime('%d'))
+    s_month = int(time_now.strftime('%m'))
+
+    print(s_day)##
+    print('-----------')##
+    print(s_month)##
+    print('-----------')##
 
 
     #loop_count = loop_count(int(s_hour))
     b_interval = interval_loop60(int(s_mins))
 
-#=========================copy==============================
     if b_interval[2] == True:
         s_hour = s_hour + 1
         start_break = ((5*s_hour)+2)+b_interval[0]
     else:
         start_break = ((5*s_hour)+1)+b_interval[0]
-#===========================================================
 
     print('loop'+str(s_hour))
     print(('break'+str(b_interval[0])))##

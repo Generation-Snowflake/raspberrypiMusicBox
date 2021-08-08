@@ -50,40 +50,26 @@ class NineThread(threading.Thread):
         global sd_test
         global ed_test
 
-        while not self.stopped.wait(60.0):
+        while not self.stopped.wait(240.0):
             try:
                 url = 'http://128.199.247.96:3000/api/music/getmusicloop'
                 r = requests.get(url,allow_redirects=True)
-                r_test = r.json()['data']
-                d_test = r.json()['download']
-                sd_test = r.json()['startDate']
-                ed_test = r.json()['endDate']
+                # r_test = r.json()['data']
+                # d_test = r.json()['download']
+                # sd_test = r.json()['startDate']
+                # ed_test = r.json()['endDate']
 
-                if triger == "":
-                    triger = str(r.json()['command'])
-                elif triger != str(r.json()['command']):
-                    #print('Triger')
-                    triger = str(r.json()['command'])
-                    a_trg = b_trg
-                    b_trg = not b_trg
+                # if triger == "":
+                #     triger = str(r.json()['command'])
+                # elif triger != str(r.json()['command']):
+                #     #print('Triger')
+                #     triger = str(r.json()['command'])
+                #     a_trg = b_trg
+                #     b_trg = not b_trg
 
                 #return r
             except:
                 print("some error...")
-        
-
-class ClockThread(threading.Thread):
-    def __init__(self, event):
-        threading.Thread.__init__(self)
-        self.stopped = event
-
-    def run(self):
-        while not self.stopped.wait(1.0):
-            time_start = datetime.now()
-            hour = time_start.strftime("%H")
-            min = time_start.strftime("%M")
-            #my_queue.put(hour)
-        return hour, min
 
 
 class BreakChange(threading.Thread):
@@ -148,9 +134,19 @@ def send_feedback():
             'statusBox': 'offline',
             'speedNet':'spdTest',
             'startPlayTime':datetime.now(),
-            'currentVolume':10
+            'currentVolume':100
             }
     requests.post(url, data = myobj)
+
+
+class FeedbackSend(threading.Thread):
+    def __init__(self, event):
+        threading.Thread.__init__(self)
+        self.stopped = event
+
+    def run(self):
+        while not self.stopped.wait(3600.0):
+            send_feedback()
 
 
 def interval_loop60(x):
@@ -191,12 +187,20 @@ if __name__ == "__main__":
     pygame.init()
     pygame.mixer.init()
 
+
     url = 'http://128.199.247.96:3000/api/music/getmusicloop'
     r = requests.get(url,allow_redirects=True)
-    r_test = r.json()['data']
-    d_test = r.json()['download']
-    sd_test = r.json()['startDate']
-    ed_test = r.json()['endDate']
+    
+    with open("music.json", "w") as output:
+        json.dump(r.json(), output)
+
+    with open('music.json') as f:
+        r_off = json.load(f)
+
+    r_test = r_off['data']
+    d_test = r_off['download']
+    sd_test = r_off['startDate']
+    ed_test = r_off['endDate']
 
     print(d_test)##
     print('-----------')##
@@ -206,12 +210,15 @@ if __name__ == "__main__":
     print('-----------')##
 
     download_music(d_test)
+    #send_feedback()
 
     stopFlag = threading.Event()
     thread = NineThread(stopFlag)
     thread.start()
 
     break_thread = BreakChange(stopFlag)
+    feedback_thread = FeedbackSend(stopFlag)
+    feedback_thread.start()
 
     # stopFlag = threading.Event()
     # thread2 = ClockThread(stopFlag)
@@ -267,7 +274,7 @@ if __name__ == "__main__":
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     
-    pause.until(datetime(2021, 8, 7, s_hour, b_interval[1], 00))
+    pause.until(datetime(2021, 8, 7, s_hour, b_interval[1]))
 
     pygame.mixer.music.play()
     break_thread.start()
