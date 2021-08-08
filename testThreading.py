@@ -19,7 +19,7 @@ start_time = time.time()
 #----------------------------------
 
 
-time.sleep(1)
+time.sleep(10)
 
 r_old = {}
 triger = ""
@@ -246,49 +246,52 @@ if __name__ == "__main__":
 
 
     #-----------directory for pi--------------
-    # pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
-    # pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
+    pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
+    pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
 
     #-----------directory form pc--------------
-    pygame.mixer.music.load("playlist/" + music_list.pop(0))
-    pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+    #pygame.mixer.music.load("playlist/" + music_list.pop(0))
+    #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     
-    pause.until(datetime(2021, 8, 7, (loop_count - 1), b_interval[1], 00))
+#    pause.until(datetime(2021, 8, 7, (loop_count - 1), b_interval[1], 00))
 
     pygame.mixer.music.play()
-    print("Play first")
+    print("Play first1")
     running = True
     while running:
-        if a_trg != b_trg:
-            pygame.mixer.music.stop()
-            music_list=[]
-            time.sleep(1)
-            for i in r_test:#+str(j)
-                music_list.append(i['sound'])
+        print(pygame.event.get())
+        # if a_trg != b_trg:
+         #   pygame.mixer.music.stop()
+          #  music_list=[]
+           # time.sleep(1)
+           # for i in r_test:#+str(j)
+           #     music_list.append(i['sound'])
 
-            #print('play again')##
-            print(music_list)
+            #print('play again')###
+#            print(music_list)
             #-----------directory for pi--------------
-            #pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
+ #           pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
 
             #-----------directory form pc--------------
-            pygame.mixer.music.load("playlist/" + music_list.pop(0))
+            #pygame.mixer.music.load("playlist/" + music_list.pop(0))
 
             #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
-            pygame.mixer.music.set_endevent(pygame.USEREVENT)
-            pygame.mixer.music.play()
-            print("Play again")##
-            a_trg = b_trg
+  #          pygame.mixer.music.set_endevent(pygame.USEREVENT)
+   #         pygame.mixer.music.play()
+    #        print("Play again")##
+#	    a_trg = b_trg
         for event in pygame.event.get():
-
-            if event.type == pygame.USEREVENT:    
+            print("pygame.event.get")
+            if event.type == pygame.USEREVENT:
+                print("pygame.EVENTUSER")
                 if len ( music_list ) > 0:
                     #-----------directory for pi--------------       
-                    #pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
+                    pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
+                    print("Update PLaylist")
 
                     #-----------directory form pc--------------
-                    pygame.mixer.music.queue("playlist/" + music_list.pop(0))
+                    #pygame.mixer.music.queue("playlist/" + music_list.pop(0))
 
                # print('aa')
     print("--- %s seconds ---" % (time.time() - start_time)) #show time ##
