@@ -142,34 +142,39 @@ def send_feedback():
 
 def interval_loop60(x):
     if x == 0:
-        x = '1'
+        x = 1
         s_mins = 0
         next = False
     elif x > 0 and x <= 10:
-        x = '2'
+        x = 2
         s_mins = 10
         next = False
     elif x > 10 and x <= 20:
-        x = '3'
+        x = 3
         s_mins = 20
         next = False
     elif x > 20 and x <= 30:
-        x = '4'
+        x = 4
         s_mins = 30
         next = False
     elif x > 30 and x <= 40:
-        x = '5'
+        x = 5
         s_mins = 40
         next = False
     elif x > 40 and x <= 50:
-        x = '6'
+        x = 5
         s_mins = 50
         next = False
     else: 
-        x = '1'
+        x = 1
         s_mins = 0
         next = True
     return [x,s_mins,next]
+
+
+def loop_count(y):
+    loop_count = y + 1
+    return loop_count
 
 
 if __name__ == "__main__":
@@ -212,35 +217,31 @@ if __name__ == "__main__":
     music_list6=[]##
 
     time_now = datetime.now()
-    hour = time_now.strftime('%H')
-    mins = time_now.strftime('%M')
+    s_hour = time_now.strftime('%H')
+    s_mins = time_now.strftime('%M')
     
-    b_interval = interval_loop60(int(mins))
+    loop_count = loop_count(int(s_hour))
+    b_interval = interval_loop60(int(s_mins))
 
     
     #print(r_test['loop1'])##
 
     # for i in r_test['loop'+hour][(b_interval[0])]:##
     #     print(i)##
+
     if b_interval[2] == True:
-        loop_count = int(hour)+2
+        start_break = (loop_count+1)*b_interval[0]
     else:
-        loop_count = int(hour)+1
+        start_break = loop_count*b_interval[0]
 
     print('loop'+str(loop_count))
-    print(('break'+b_interval[0]))##
+    print(('break'+str(b_interval[0])))##
 
     print('-----------')##
 
-    for i in range (loop_count,24):
-        if str(i) == str(loop_count):
-            for j in range(int(b_interval[0]),7):
-                for l in r_test['loop'+str(loop_count)]['break'+str(j)]:
-                    music_list.append(l['sound']) 
-        else:
-            for k in r_test['loop'+str(i)]:
-                for m in r_test['loop'+str(i)][str(k)]:
-                    music_list.append(m['sound'])
+    for i in range (start_break,144):
+        for j in r_test['break'+str(start_break)]:
+            music_list.append(j['sound'])
                 
     #print(music_list[0])
 
