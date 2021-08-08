@@ -238,6 +238,8 @@ if __name__ == "__main__":
     time_now = datetime.now()
     s_hour = int(time_now.strftime('%H'))
     s_mins = time_now.strftime('%M')
+    s_day = int(time_now.strftime('%d'))
+    s_month = int(time_now.strftime('%m'))
     
     b_interval = interval_loop60(int(s_mins))
 
@@ -274,7 +276,7 @@ if __name__ == "__main__":
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     
-    pause.until(datetime(2021, 8, 7, s_hour, b_interval[1]))
+    pause.until(datetime(2021, s_month, s_day, s_hour, b_interval[1]))
 
     pygame.mixer.music.play()
     break_thread.start()
