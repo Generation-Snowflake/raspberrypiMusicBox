@@ -54,7 +54,7 @@ class BreakChange(threading.Thread):
 
     def run(self):
         global c
-        while not self.stopped.wait(10):
+        while not self.stopped.wait(90):
             c = 1
         return c
             # call a function
@@ -92,26 +92,18 @@ def interval_loop60(x):
     return [x,s_mins,next]
 
 
-def loop_count(y):
-    loop_count = y + 1
-    return loop_count
-
-
 if __name__ == "__main__":
 
+    os.environ["SDL_VIDEODRIVER"] = "dummy"
     pygame.init()
     pygame.mixer.init()
-    # stopFlag = threading.Event()
-    # thread2 = ClockThread(stopFlag)
-    # thread2.start()
-    #print('ssss')
-    #timee = my_queue.get()
-    #print(timee)
+
     stopFlag = threading.Event()
     break_thread = BreakChange(stopFlag)
 
     music_list=[]
-    music_list_all=[]
+    b = 0
+    music_list_all=[]##
     music_list3=[]##
     music_list4=[]##
     music_list5=[]##
@@ -133,27 +125,29 @@ if __name__ == "__main__":
     print('-----------')##
 
     time_now = datetime.now()
-    s_hour = time_now.strftime('%H')
+    s_hour = int(time_now.strftime('%H'))
     s_mins = time_now.strftime('%M')
 
-    loop_count = loop_count(int(s_hour))
+
+    #loop_count = loop_count(int(s_hour))
     b_interval = interval_loop60(int(s_mins))
 
-    #------------------copy this---------------
+#=========================copy==============================
     if b_interval[2] == True:
-        start_break = (loop_count+1)*b_interval[0]
+        s_hour = s_hour + 1
+        start_break = ((5*s_hour)+2)+b_interval[0]
     else:
-        start_break = loop_count*b_interval[0]
-    #-------------------------------------------
+        start_break = ((5*s_hour)+1)+b_interval[0]
+#===========================================================
 
-    print('loop'+str(loop_count))
+    print('loop'+str(s_hour))
     print(('break'+str(b_interval[0])))##
 
     print('-----------')##
 
-    for i in range (start_break,144):
-        for j in r_test['break'+str(start_break)]:
-            music_list.append(j['sound'])
+#for i in range (start_break,144):
+    for j in r_test['break'+str(start_break)]:
+        music_list.append(j['sound'])
 
     print('break'+str(start_break))
     print(music_list)
@@ -176,6 +170,15 @@ if __name__ == "__main__":
     while running:
         if c == 1:
             pygame.mixer.music.stop()
+            b = b + 1
+            music_list = []
+            print(music_list)
+            for j in r_test['break'+str(start_break+b)]:
+                music_list.append(j['sound'])
+            print('-----------')##
+            print('-----------')##
+            print('break'+str(start_break+b))
+            pygame.mixer.music.load("playlist/" + music_list.pop(0))
             pygame.mixer.music.play()
             c = 0
 

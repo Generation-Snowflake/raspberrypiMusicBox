@@ -29,6 +29,7 @@ r_test = []
 d_test = []
 sd_test = []
 ed_test = []
+c = 0
 
 
 
@@ -83,6 +84,18 @@ class ClockThread(threading.Thread):
             min = time_start.strftime("%M")
             #my_queue.put(hour)
         return hour, min
+
+
+class BreakChange(threading.Thread):
+    def __init__(self, event):
+        threading.Thread.__init__(self)
+        self.stopped = event
+
+    def run(self):
+        global c
+        while not self.stopped.wait(90):
+            c = 1
+        return c
 
 
 def getserial():
@@ -172,13 +185,9 @@ def interval_loop60(x):
     return [x,s_mins,next]
 
 
-def loop_count(y):
-    loop_count = y + 1
-    return loop_count
-
-
 if __name__ == "__main__":
 
+    os.environ["SDL_VIDEODRIVER"] = "dummy"
     pygame.init()
     pygame.mixer.init()
 
@@ -202,6 +211,8 @@ if __name__ == "__main__":
     thread = NineThread(stopFlag)
     thread.start()
 
+    break_thread = BreakChange(stopFlag)
+
     # stopFlag = threading.Event()
     # thread2 = ClockThread(stopFlag)
     # thread2.start()
@@ -210,6 +221,7 @@ if __name__ == "__main__":
     #print(timee)
 
     music_list=[]
+    b = 0
     music_list_all=[]##
     music_list3=[]##
     music_list4=[]##
@@ -217,10 +229,9 @@ if __name__ == "__main__":
     music_list6=[]##
 
     time_now = datetime.now()
-    s_hour = time_now.strftime('%H')
+    s_hour = int(time_now.strftime('%H'))
     s_mins = time_now.strftime('%M')
     
-    loop_count = loop_count(int(s_hour))
     b_interval = interval_loop60(int(s_mins))
 
     
@@ -230,18 +241,19 @@ if __name__ == "__main__":
     #     print(i)##
 
     if b_interval[2] == True:
-        start_break = (loop_count+1)*b_interval[0]
+        s_hour = s_hour + 1
+        start_break = ((5*s_hour)+2)+b_interval[0]
     else:
-        start_break = loop_count*b_interval[0]
+        start_break = ((5*s_hour)+1)+b_interval[0]
 
-    print('loop'+str(loop_count))
-    print(('break'+str(b_interval[0])))##
-
+    print(s_hour)
+    print('-----------')##
+    print('break'+str(start_break))
     print('-----------')##
 
-    for i in range (start_break,144):
-        for j in r_test['break'+str(start_break)]:
-            music_list.append(j['sound'])
+    #for i in range (start_break,144):###
+    for j in r_test['break'+str(start_break)]:
+        music_list.append(j['sound'])
                 
     #print(music_list[0])
 
@@ -255,32 +267,27 @@ if __name__ == "__main__":
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     
-    pause.until(datetime(2021, 8, 7, (loop_count - 1), b_interval[1], 00))
+    pause.until(datetime(2021, 8, 7, s_hour, b_interval[1], 00))
 
     pygame.mixer.music.play()
+    break_thread.start()
     print("Play first")
     running = True
     while running:
-        if a_trg != b_trg:
+        if c == 1:
             pygame.mixer.music.stop()
-            music_list=[]
-            time.sleep(1)
-            for i in r_test:#+str(j)
-                music_list.append(i['sound'])
-
-            #print('play again')##
+            b = b + 1
+            music_list = []
             print(music_list)
-            #-----------directory for pi--------------
-            #pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
-
-            #-----------directory form pc--------------
+            for j in r_test['break'+str(start_break+b)]:
+                music_list.append(j['sound'])
+            print('-----------')##
+            print('-----------')##
+            print('break'+str(start_break+b))
             pygame.mixer.music.load("playlist/" + music_list.pop(0))
-
-            #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
-            pygame.mixer.music.set_endevent(pygame.USEREVENT)
             pygame.mixer.music.play()
-            print("Play again")##
-            a_trg = b_trg
+            c = 0
+
         for event in pygame.event.get():
 
             if event.type == pygame.USEREVENT:    
