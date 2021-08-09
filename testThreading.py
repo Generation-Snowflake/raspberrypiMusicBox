@@ -145,7 +145,7 @@ def send_feedback():
             'freeSpace':str(gigabytes_avail),
             'statusBox': 'offline',
             'speedNet':'spdTest',
-            'startPlayTime':datetime.now(),
+            'startPlayTime':s_date,
             'currentVolume':100
             }
     requests.post(url, data = myobj)
@@ -245,9 +245,11 @@ if __name__ == "__main__":
     time_now = datetime.now()
     s_hour = int(time_now.strftime('%H'))
     s_mins = time_now.strftime('%M')
+    s_sec = time_now.strftime('%S')
     s_day = int(time_now.strftime('%d'))
     s_month = int(time_now.strftime('%m'))
     s_year = int(time_now.strftime('%Y'))
+    s_date = time_now.strftime("%d/%m/%Y, %H:%M:%S")
     
     b_interval = interval_loop60(int(s_mins))
 
@@ -282,9 +284,8 @@ if __name__ == "__main__":
     #-----------directory form pc--------------
     pygame.mixer.music.load("playlist/" + music_list.pop(0))
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+    
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
-
-
     
     pause.until(datetime(s_year, s_month, s_day, s_hour, b_interval[1]))
 
