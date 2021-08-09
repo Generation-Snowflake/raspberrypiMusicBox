@@ -28,6 +28,7 @@ r_test = []
 d_test = []
 sd_test = []
 ed_test = []
+music_fin = {}
 c = 0
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -138,6 +139,7 @@ def send_feedback():
     path = '/'
     bytes_avail = psutil.disk_usage(path).free
     gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
+    print(music_fin)
 
     url = 'https://api.dv8automate.com/api/player/box/feedback'
     myobj = {
@@ -146,7 +148,8 @@ def send_feedback():
             'statusBox': 'offline',
             'speedNet':'spdTest',
             'startPlayTime':s_date,
-            'currentVolume':100
+            'currentVolume':100,
+            'music':music_fin
             }
     requests.post(url, data = myobj)
 
@@ -157,8 +160,9 @@ class FeedbackSend(threading.Thread):
         self.stopped = event
 
     def run(self):
-        while not self.stopped.wait(3600.0):#3600
+        while not self.stopped.wait(20.0):#3600
             send_feedback()
+
 
 
 def interval_loop60(x):
@@ -236,11 +240,6 @@ if __name__ == "__main__":
 
     music_list=[]
     b = 0
-    music_list_all=[]##
-    music_list3=[]##
-    music_list4=[]##
-    music_list5=[]##
-    music_list6=[]##
 
     time_now = datetime.now()
     s_hour = int(time_now.strftime('%H'))
@@ -267,6 +266,7 @@ if __name__ == "__main__":
 
     print('-----------')##
     print('break'+str(start_break))
+    music_fin = {'break'+str(start_break):[]}
     print('-----------')##
 
     #for i in range (start_break,144):###
@@ -275,19 +275,26 @@ if __name__ == "__main__":
                 
     print(music_list)
     print('-----------')##
+    print('-----------')##
 
 
     #-----------directory for pi--------------
+    # music_fin['break'+str(start_break)].append(music_list[0])
     # pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
+    # music_fin['break'+str(start_break)].append(music_list[0])
     # pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
 
     #-----------directory form pc--------------
+    music_fin['break'+str(start_break)].append(music_list[0])
     pygame.mixer.music.load("playlist/" + music_list.pop(0))
+    music_fin['break'+str(start_break)].append(music_list[0])
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
+    print(music_fin)
+    print('-----------')##
     
-    pause.until(datetime(s_year, s_month, s_day, s_hour, b_interval[1]))
+    # pause.until(datetime(s_year, s_month, s_day, s_hour, b_interval[1]))
 
     pygame.mixer.music.play()
     break_thread.start()
@@ -301,10 +308,12 @@ if __name__ == "__main__":
             print(music_list)
             for j in r_test['break'+str(start_break+b)]:
                 music_list.append(j['sound'])
+            music_fin['break'+str(start_break+b)] = []
             print('-----------')##
             print('-----------')##
-            print('break'+str(start_break+b))
-            print(music_list)
+            print('break'+str(start_break+b))##
+            print(music_list)##
+            music_fin[list(music_fin.keys())[-1]].append(music_list[0])
             pygame.mixer.music.load("playlist/" + music_list.pop(0))
             #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
             pygame.mixer.music.play()
@@ -313,11 +322,16 @@ if __name__ == "__main__":
         for event in pygame.event.get():
             if event.type == pygame.USEREVENT:    
                 if len ( music_list ) > 0:
-                    #-----------directory for pi--------------       
+                    #-----------directory for pi--------------  
+                    # music_fin['break'+str(start_break)].append(music_list[0])     
                     #pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
 
                     #-----------directory form pc--------------
+                    music_fin[list(music_fin.keys())[-1]].append(music_list[0])
                     pygame.mixer.music.queue("playlist/" + music_list.pop(0))
+                    print('-----------')##
+                    print('-----------')##
+                    print(music_fin)##
 
                # print('aa')
     print("--- %s seconds ---" % (time.time() - start_time)) #show time ##
