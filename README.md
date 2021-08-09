@@ -2,12 +2,6 @@
 
 Project to make raspberry pi 4 like music box can command the playlist from every where.....
 
-# For mopidy
-install mopidy for raspberry pi
-
-pip install Mopidy
-sudo apt-get install python3-gi
-
 # install this pkg
 
 ```sudo pip3 install psutil ```
