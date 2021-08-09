@@ -18,7 +18,6 @@ import time
 start_time = time.time()
 #----------------------------------
 
-
 time.sleep(1)
 
 r_old = {}
@@ -31,6 +30,9 @@ sd_test = []
 ed_test = []
 c = 0
 
+os.environ["SDL_VIDEODRIVER"] = "dummy"
+pygame.init()
+pygame.mixer.init()
 
 
 #my_queue = queue.Queue()
@@ -79,7 +81,7 @@ class BreakChange(threading.Thread):
 
     def run(self):
         global c
-        while not self.stopped.wait(90):
+        while not self.stopped.wait(600):
             c = 1
         return c
 
@@ -145,7 +147,7 @@ class FeedbackSend(threading.Thread):
         self.stopped = event
 
     def run(self):
-        while not self.stopped.wait(3600.0):
+        while not self.stopped.wait(3600.0):#3600
             send_feedback()
 
 
@@ -182,11 +184,6 @@ def interval_loop60(x):
 
 
 if __name__ == "__main__":
-
-    os.environ["SDL_VIDEODRIVER"] = "dummy"
-    pygame.init()
-    pygame.mixer.init()
-
 
     url = 'http://128.199.247.96:3000/api/music/getmusicloop'
     r = requests.get(url,allow_redirects=True)
@@ -240,6 +237,7 @@ if __name__ == "__main__":
     s_mins = time_now.strftime('%M')
     s_day = int(time_now.strftime('%d'))
     s_month = int(time_now.strftime('%m'))
+    s_year = int(time_now.strftime('%Y'))
     
     b_interval = interval_loop60(int(s_mins))
 
@@ -251,9 +249,9 @@ if __name__ == "__main__":
 
     if b_interval[2] == True:
         s_hour = s_hour + 1
-        start_break = ((5*s_hour)+2)+b_interval[0]
+        start_break = ((6*s_hour)+2)+b_interval[0]
     else:
-        start_break = ((5*s_hour)+1)+b_interval[0]
+        start_break = ((6*s_hour)+1)+b_interval[0]
 
     print(s_hour)
     print('-----------')##
@@ -275,8 +273,10 @@ if __name__ == "__main__":
     pygame.mixer.music.load("playlist/" + music_list.pop(0))
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
+
+
     
-    pause.until(datetime(2021, s_month, s_day, s_hour, b_interval[1]))
+    pause.until(datetime(s_year, s_month, s_day, s_hour, b_interval[1]))
 
     pygame.mixer.music.play()
     break_thread.start()
