@@ -56,6 +56,16 @@ class NineThread(threading.Thread):
             try:
                 url = 'http://128.199.247.96:3000/api/music/getmusicloop'
                 r = requests.get(url,allow_redirects=True)
+                with open("music.json", "w") as output:
+                    json.dump(r.json(), output)
+
+                with open('music.json') as f:
+                    r_off = json.load(f)
+
+                r_test = r_off['data']
+                d_test = r_off['download']
+                sd_test = r_off['startDate']
+                ed_test = r_off['endDate']
                 # r_test = r.json()['data']
                 # d_test = r.json()['download']
                 # sd_test = r.json()['startDate']
@@ -253,7 +263,6 @@ if __name__ == "__main__":
     else:
         start_break = ((6*s_hour)+1)+b_interval[0]
 
-    print(s_hour)
     print('-----------')##
     print('break'+str(start_break))
     print('-----------')##
@@ -262,7 +271,8 @@ if __name__ == "__main__":
     for j in r_test['break'+str(start_break)]:
         music_list.append(j['sound'])
                 
-    #print(music_list[0])
+    print(music_list)
+    print('-----------')##
 
 
     #-----------directory for pi--------------
@@ -293,12 +303,13 @@ if __name__ == "__main__":
             print('-----------')##
             print('-----------')##
             print('break'+str(start_break+b))
+            print(music_list)
             pygame.mixer.music.load("playlist/" + music_list.pop(0))
+            #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
             pygame.mixer.music.play()
             c = 0
-
+        
         for event in pygame.event.get():
-
             if event.type == pygame.USEREVENT:    
                 if len ( music_list ) > 0:
                     #-----------directory for pi--------------       
