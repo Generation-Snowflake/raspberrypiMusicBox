@@ -53,9 +53,6 @@ WantedBy=multi-user.target
 
 ```sudo systemctl daemon-reload```
 
-5.manual service start
-
-```sudo systemctl start nine.service```
 
 # Service Task
 ## Check status
