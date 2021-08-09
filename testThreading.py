@@ -183,7 +183,7 @@ def interval_loop60(x):
         s_mins = 40
         next = False
     elif x > 40 and x <= 50:
-        x = 5
+        x = 6
         s_mins = 50
         next = False
     else: 
@@ -259,9 +259,9 @@ if __name__ == "__main__":
 
     if b_interval[2] == True:
         s_hour = s_hour + 1
-        start_break = ((6*s_hour)+2)+b_interval[0]
+        start_break = (6*s_hour)+b_interval[0]
     else:
-        start_break = ((6*s_hour)+1)+b_interval[0]
+        start_break = (6*s_hour)+b_interval[0]
 
     print('-----------')##
     print('break'+str(start_break))
