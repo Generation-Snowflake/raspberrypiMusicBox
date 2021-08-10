@@ -221,7 +221,6 @@ if __name__ == "__main__":
     print('-----------')##
 
     download_music(d_test)
-    #send_feedback()
 
     stopFlag = threading.Event()
     thread = NineThread(stopFlag)
@@ -230,13 +229,6 @@ if __name__ == "__main__":
     break_thread = BreakChange(stopFlag)
     feedback_thread = FeedbackSend(stopFlag)
     feedback_thread.start()
-
-    # stopFlag = threading.Event()
-    # thread2 = ClockThread(stopFlag)
-    # thread2.start()
-    #print('ssss')
-    #timee = my_queue.get()
-    #print(timee)
 
     music_list=[]
     b = 0
@@ -251,12 +243,6 @@ if __name__ == "__main__":
     s_date = time_now.strftime("%d/%m/%Y, %H:%M:%S")
     
     b_interval = interval_loop60(int(s_mins))
-
-    
-    #print(r_test['loop1'])##
-
-    # for i in r_test['loop'+hour][(b_interval[0])]:##
-    #     print(i)##
 
     if b_interval[2] == True:
         s_hour = s_hour + 1
@@ -294,8 +280,13 @@ if __name__ == "__main__":
     print(music_fin)
     print('-----------')##
     
-    pause.until(datetime(s_year, s_month, s_day, s_hour, b_interval[1]))
-
+    #pause.until(datetime(s_year, s_month, s_day, s_hour, b_interval[1]))
+    
+    while True:
+        ts = int(datetime.now().strftime('%M'))
+        if ts%10 == 0:
+            break
+    
     pygame.mixer.music.play()
     break_thread.start()
     print("Play first")
@@ -329,6 +320,7 @@ if __name__ == "__main__":
                     #-----------directory form pc--------------
                     music_fin[list(music_fin.keys())[-1]].append(music_list[0])
                     pygame.mixer.music.queue("playlist/" + music_list.pop(0))
+                    
                     print('-----------')##
                     print('-----------')##
                     print(music_fin)##
