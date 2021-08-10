@@ -72,3 +72,11 @@ WantedBy=multi-user.target
 ```sudo journalctl -f -u nine.service```
 
 
+# speacial case
+
+Go to root user by this command
+'''sudo -i'''
+
+update pygame 1.9 to 2.0
+
+python3 -m pip install -U pygame --user
