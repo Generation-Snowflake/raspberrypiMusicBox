@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
     print(d_test)##
     print('-----------')##
-    print(sd_test[-2:])##
+    print(sd_test)##
     print('-----------')##
     print(ed_test)##
     print('-----------')##
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     s_day = int(time_now.strftime('%d'))
     s_month = int(time_now.strftime('%m'))
 
-    print(s_day)##
+    print(type(s_day))##
     print('-----------')##
     print(s_month)##
     print('-----------')##
