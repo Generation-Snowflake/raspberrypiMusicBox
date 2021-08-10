@@ -278,7 +278,7 @@ if __name__ == "__main__":
     
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     print(music_fin)
-    print('-----------')##
+    print('------------')##
     
     #pause.until(datetime(s_year, s_month, s_day, s_hour, b_interval[1]))
     
