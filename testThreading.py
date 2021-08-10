@@ -9,7 +9,7 @@ import psutil
 import os
 import pygame
 
-# time.sleep(10)
+time.sleep(10)
 
 r_data = []
 r_download = []
