@@ -149,7 +149,7 @@ def send_feedback():
             'speedNet':'spdTest',
             'startPlayTime':s_date,
             'currentVolume':100,
-            'music':music_fin
+            'playlist':music_fin
             }
     requests.post(url, data = myobj)
 
@@ -294,7 +294,7 @@ if __name__ == "__main__":
     print(music_fin)
     print('-----------')##
     
-    # pause.until(datetime(s_year, s_month, s_day, s_hour, b_interval[1]))
+    pause.until(datetime(s_year, s_month, s_day, s_hour, b_interval[1]))
 
     pygame.mixer.music.play()
     break_thread.start()
