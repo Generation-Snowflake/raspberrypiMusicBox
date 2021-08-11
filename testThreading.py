@@ -276,6 +276,11 @@ if __name__ == "__main__":
 
             music_finish[list(music_finish.keys())[-1]].append(music_list[0])
             pygame.mixer.music.load("playlist/" + music_list.pop(0))
+            music_finish['break'+str(start_break)].append(music_list[0])
+            pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+    
+            pygame.mixer.music.set_endevent(pygame.USEREVENT)
+    
             pygame.mixer.music.play()
             count = 0
         
