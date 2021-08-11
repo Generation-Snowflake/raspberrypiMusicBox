@@ -119,12 +119,18 @@ def send_feedback():
     gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
     print(music_finish)
 
+    # try:
+    #     spd_test = speedtest.Speedtest()
+    #     netSpeed = spd_test.download()
+    # except:
+    #     print('spdtest_error')
+
     url = 'https://api.dv8automate.com/api/player/box/feedback'
     myobj = {
-            'serialNumber':getserial(), #10000000ce768306
+            'serialNumber':'10000000ce768306', #10000000ce768306
             'freeSpace':str(gigabytes_avail),
             'statusBox': 'Online',
-            'speedNet':'spdTest',
+            'speedNet':'netSpeed',
             'startPlayTime':s_date,
             'currentVolume':100,
             'playlist':music_finish
@@ -138,7 +144,7 @@ class FeedbackSend(threading.Thread):
         self.stopped = event
 
     def run(self):
-        while not self.stopped.wait(3600.0):#3600
+        while not self.stopped.wait(180.0):#3600
             send_feedback()
 
 
@@ -225,61 +231,63 @@ if __name__ == "__main__":
     else:
         start_break = (6*s_hour)+b_interval[0]
 
-    for j in r_data['break'+str(start_break)]:
-        music_list.append(j['sound'])
-
-    print('-----------')##
-    print('break'+str(start_break))
-    print(music_list)##
-    music_finish = {'break'+str(start_break):[]}
-    print('-----------')##
-
-    music_finish['break'+str(start_break)].append(music_list[0])
-    pygame.mixer.music.load("playlist/" + music_list.pop(0))
-    music_finish['break'+str(start_break)].append(music_list[0])
-    pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
-    
-    pygame.mixer.music.set_endevent(pygame.USEREVENT)
-    
-    waiting = True
-    while waiting:
-        tsm = int(datetime.now().strftime('%M'))
-        tss = int(datetime.now().strftime('%S'))
-        for i in date_list:
-            if tsm%10 == 0 and tss == 0 and i == time_now.strftime('%Y-%m-%d'):
-                date_list.pop(0)
-                waiting = False
-                break
-            
-    pygame.mixer.music.play()
-    break_thread.start()
-
     while True:
-        if count == 1:
-            pygame.mixer.music.stop()
-            b = b + 1
-            music_list = []
-            music_finish['break'+str(start_break+b)] = []
+        ascadvadc=0
 
-            for j in r_data['break'+str(start_break+b)]:
-                music_list.append(j['sound'])
+    # for j in r_data['break'+str(start_break)]:
+    #     music_list.append(j['sound'])
 
-            print('-----------')##
-            print('-----------')##
-            print('break'+str(start_break+b))##
-            print(music_list)##
+    # print('-----------')##
+    # print('break'+str(start_break))
+    # print(music_list)##
+    # music_finish = {'break'+str(start_break):[]}
+    # print('-----------')##
 
-            music_finish[list(music_finish.keys())[-1]].append(music_list[0])
-            pygame.mixer.music.load("playlist/" + music_list.pop(0))
-            pygame.mixer.music.play()
-            count = 0
+    # music_finish['break'+str(start_break)].append(music_list[0])
+    # pygame.mixer.music.load("playlist/" + music_list.pop(0))
+    # music_finish['break'+str(start_break)].append(music_list[0])
+    # pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+    
+    # pygame.mixer.music.set_endevent(pygame.USEREVENT)
+    
+    # waiting = True
+    # while waiting:
+    #     ts = int(datetime.now().strftime('%M'))
+    #     for i in date_list:
+    #         if ts%10 == 0 and i == time_now.strftime('%Y-%m-%d'):
+    #             date_list.pop(0)
+    #             waiting = False
+    #             break
+            
+    # pygame.mixer.music.play()
+    # break_thread.start()
+
+    # while True:
+    #     if count == 1:
+    #         pygame.mixer.music.stop()
+    #         b = b + 1
+    #         music_list = []
+    #         music_finish['break'+str(start_break+b)] = []
+
+    #         for j in r_data['break'+str(start_break+b)]:
+    #             music_list.append(j['sound'])
+
+    #         print('-----------')##
+    #         print('-----------')##
+    #         print('break'+str(start_break+b))##
+    #         print(music_list)##
+
+    #         music_finish[list(music_finish.keys())[-1]].append(music_list[0])
+    #         pygame.mixer.music.load("playlist/" + music_list.pop(0))
+    #         pygame.mixer.music.play()
+    #         count = 0
         
-        for event in pygame.event.get():
-            if event.type == pygame.USEREVENT:    
-                if len ( music_list ) > 0:
-                    music_finish[list(music_finish.keys())[-1]].append(music_list[0])
-                    pygame.mixer.music.queue("playlist/" + music_list.pop(0))
+    #     for event in pygame.event.get():
+    #         if event.type == pygame.USEREVENT:    
+    #             if len ( music_list ) > 0:
+    #                 music_finish[list(music_finish.keys())[-1]].append(music_list[0])
+    #                 pygame.mixer.music.queue("playlist/" + music_list.pop(0))
                     
-                    print('-----------')##
-                    print('-----------')##
-                    print(music_finish)##
+    #                 print('-----------')##
+    #                 print('-----------')##
+    #                 print(music_finish)##
