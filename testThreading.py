@@ -243,9 +243,10 @@ if __name__ == "__main__":
     
     waiting = True
     while waiting:
-        ts = int(datetime.now().strftime('%M'))
+        tsm = int(datetime.now().strftime('%M'))
+        tss = int(datetime.now().strftime('%S'))
         for i in date_list:
-            if ts%10 == 0 and i == time_now.strftime('%Y-%m-%d'):
+            if tsm%10 == 0 and tss == 0 and i == time_now.strftime('%Y-%m-%d'):
                 date_list.pop(0)
                 waiting = False
                 break
