@@ -9,7 +9,7 @@ import psutil
 import os
 import pygame
 
-time.sleep(10)
+# time.sleep(10)
 
 r_data = []
 r_download = []
@@ -36,7 +36,7 @@ class RequestThread(threading.Thread):
 
         while not self.stopped.wait(240.0):
             try:
-                url = 'http://128.199.247.96:3000/api/music/getmusicloop'
+                url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
                 r = requests.get(url,allow_redirects=True)
                 with open("music.json", "w") as output:
                     json.dump(r.json(), output)
@@ -102,9 +102,15 @@ def download_music(r_download):
     else: return None
 
 
-# def delete_music():
-#     url = 'http://128.199.247.96:3000/api/music/getmusicloop'
-#     os.remove('playlist/'+musicname)
+def delete_music():
+    url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
+    delete_r = requests.get(url,allow_redirects=True)
+
+    for i in delete_r.json()['delete']:
+        try:
+            os.remove('playlist/'+i)
+        except OSError:
+            pass
 
 
 def send_feedback():
@@ -115,7 +121,7 @@ def send_feedback():
 
     url = 'https://api.dv8automate.com/api/player/box/feedback'
     myobj = {
-            'serialNumber':'10000000ce768306',
+            'serialNumber':getserial(), #10000000ce768306
             'freeSpace':str(gigabytes_avail),
             'statusBox': 'Online',
             'speedNet':'spdTest',
@@ -170,7 +176,7 @@ def loop60(x):
 
 if __name__ == "__main__":
 
-    url = 'http://128.199.247.96:3000/api/music/getmusicloop'
+    url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
     r = requests.get(url,allow_redirects=True)
     
     with open("music.json", "w") as output:
@@ -192,8 +198,8 @@ if __name__ == "__main__":
     for single_date in (start_date + timedelta(n) for n in range(date_interval.days+1)):
         date_list.append(single_date.strftime('%Y-%m-%d'))
 
+    delete_music()
     download_music(r_download)
-    # delete_music()
 
     stopFlag = threading.Event()
     request_thread = RequestThread(stopFlag)
