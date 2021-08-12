@@ -81,6 +81,12 @@ update pygame 1.9 to 2.0
 
 ```python3 -m pip install -U pygame --user```
 
+# Install Anydesk
+```sudo apt update```
+```sudo apt full-upgrade```
+```wget https://download.anydesk.com/rpi/anydesk_6.1.1-1_armhf.deb```
+```sudo dpkg -i anydesk_6.1.1-1_armhf.deb```
+```sudo apt-get install -f```
 
 # Fake monitor for Anydesk
 https://askubuntu.com/questions/453109/add-fake-display-when-no-monitor-is-plugged-in
