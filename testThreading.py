@@ -198,6 +198,15 @@ def loop60(x):
 
 if __name__ == "__main__":
 
+    waiting = True
+    while waiting:
+        tsm = int(datetime.now().strftime('%M'))
+        tss = int(datetime.now().strftime('%S'))
+        for i in date_list:
+            if tss == 0 and tsm&10 ==0 and i == time_now.strftime('%Y-%m-%d') and urllib.request.urlopen('http://google.com'):
+                waiting = False
+                break
+    
     try:
         url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
         r = requests.get(url,allow_redirects=True)
@@ -273,14 +282,7 @@ if __name__ == "__main__":
     
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     
-    waiting = True
-    while waiting:
-        tsm = int(datetime.now().strftime('%M'))
-        tss = int(datetime.now().strftime('%S'))
-        for i in date_list:
-            if tss == 0 and tsm&10 ==0 and i == time_now.strftime('%Y-%m-%d') and urllib.request.urlopen('http://google.com'):
-                waiting = False
-                break
+
             
     pygame.mixer.music.play()
     break_thread.start()
