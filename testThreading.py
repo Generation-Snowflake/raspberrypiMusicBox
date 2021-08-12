@@ -145,10 +145,11 @@ def send_feedback():
                 'speedNet':netSpeed/1000000,
                 'startPlayTime':s_date,
                 'currentVolume':100,
-                'playlist':music_finish
+                'playlist':''
                 }
+        
         x = requests.post(url, data = myobj)
-        print(x.text)
+        print('feedback from url :: '+x.text)
     except:
         print('request fail')
 
