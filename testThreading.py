@@ -140,13 +140,13 @@ def send_feedback():
         #print('url try')##
         url = 'https://api.dv8automate.com/api/player/box/feedback/'
         myobj = {
-                'serialNumber':getserial(), #100000000ec590a2str(getserial())
+                'serialNumber':'10000000ce768306',#getserial(), #100000000ec590a2str(getserial())
                 'freeSpace':str(gigabytes_avail),
                 'statusBox':'Online',
-                'speedNet':netSpeed/1000000,
+                'speedNet':'netSpeed/1000000',
                 'startPlayTime':s_date,
                 'currentVolume':100,
-                'playlist':music_finish
+                'playlist':str(music_finish)
                 }
         x = requests.post(url, data = myobj)
         #print(x.text)##
@@ -160,7 +160,7 @@ class FeedbackSend(threading.Thread):
         self.stopped = event
 
     def run(self):
-        while not self.stopped.wait(3600.0):#3600
+        while not self.stopped.wait(600.0):#3600
             send_feedback()
             
 
@@ -262,8 +262,12 @@ if __name__ == "__main__":
     else:
         start_break = (6*s_hour)+b_interval[0]
 
-    for j in r_data['break'+str(start_break)]:
-        music_list.append(j['sound'])
+    if 'break'+str(start_break+b) == 'break145':
+        for l in r_data['break1']:
+            music_list.append(l['sound'])
+    else:
+        for m in r_data['break'+str(start_break)]:
+            music_list.append(m['sound'])
 
     #print('-----------')##
     #print('break'+str(start_break))
@@ -297,8 +301,12 @@ if __name__ == "__main__":
             music_list = []
             music_finish['break'+str(start_break+b)] = []
 
-            for j in r_data['break'+str(start_break+b)]:
-                music_list.append(j['sound'])
+            if 'break'+str(start_break+b) == 'break145':
+                for k in r_data['break1']:
+                    music_list.append(k['sound'])    
+            else:
+                for j in r_data['break'+str(start_break+b)]:
+                    music_list.append(j['sound'])
 
             #print('-----------')##
             #print('-----------')##
