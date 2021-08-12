@@ -82,4 +82,9 @@ update pygame 1.9 to 2.0
 ```python3 -m pip install -U pygame --user```
 
 
-## https://askubuntu.com/questions/453109/add-fake-display-when-no-monitor-is-plugged-in
+# Fake monitor for Anydesk
+https://askubuntu.com/questions/453109/add-fake-display-when-no-monitor-is-plugged-in
+
+# Check Serial
+
+```cat /proc/cpuinfo | grep Serial | cut -d ' ' -f 2```
