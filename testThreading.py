@@ -8,8 +8,9 @@ import speedtest
 import psutil
 import os
 import pygame
+import urllib.request
 
-time.sleep(1)
+time.sleep(30)
 
 r_data = []
 r_download = []
@@ -24,18 +25,18 @@ pygame.mixer.init()
 
 
 def getserial():
-  # Extract serial from cpuinfo file
-  cpuserial = "0000000000000000"
-  try:
-    f = open('/proc/cpuinfo','r')
-    for line in f:
-      if line[0:6]=='Serial':
-        cpuserial = line[10:26]
-    f.close()
-  except:
-    cpuserial = "ERROR000000000"
+    # Extract serial from cpuinfo file
+    cpuserial = "0000000000000000"
+    try:
+        f = open('/proc/cpuinfo','r')
+        for line in f:
+            if line[0:6]=='Serial':
+                cpuserial = line[10:26]
+        f.close()
+    except:
+        cpuserial = "ERROR000000000"
 
-  return cpuserial
+    return cpuserial
     
 
 class RequestThread(threading.Thread):
@@ -122,35 +123,36 @@ def delete_music():
 
 
 def send_feedback():
-    print('firstFeedback')
+    #print('firstFeedback')##
     path = '/'
     bytes_avail = psutil.disk_usage(path).free
     gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
-    print(music_finish)
+    #print(music_finish)##
 
     try:
         spd_test = speedtest.Speedtest()
         netSpeed = spd_test.download()
     except:
         netSpeed = '0'
-        print('spdtest_error')
+        print('spdtest_error')##
 
     try:
-        print('url try')
+        #print('url try')##
         url = 'https://api.dv8automate.com/api/player/box/feedback/'
         myobj = {
                 'serialNumber':getserial(), #100000000ec590a2str(getserial())
                 'freeSpace':str(gigabytes_avail),
-                'statusBox': 'Online',
+                'statusBox':'Online',
                 'speedNet':netSpeed/1000000,
                 'startPlayTime':s_date,
                 'currentVolume':100,
                 'playlist':music_finish
                 }
         x = requests.post(url, data = myobj)
-        print(x.text)
+        #print(x.text)##
     except:
         print('request fail')
+
 
 class FeedbackSend(threading.Thread):
     def __init__(self, event):
@@ -158,11 +160,9 @@ class FeedbackSend(threading.Thread):
         self.stopped = event
 
     def run(self):
-        while not self.stopped.wait(20.0):#3600
-            print("FeedbackClass")
+        while not self.stopped.wait(3600.0):#3600
             send_feedback()
             
-
 
 def loop60(x):
     if x == 0:
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     except:
         with open('music.json') as f:
             r_off = json.load(f)
-        print("some error...")
+        #print("load playlist from json without internet")##
         
     r_data = r_off['data']
     r_download = r_off['download']
@@ -260,11 +260,11 @@ if __name__ == "__main__":
     for j in r_data['break'+str(start_break)]:
         music_list.append(j['sound'])
 
-    print('-----------')##
-    print('break'+str(start_break))
-    print(music_list)##
+    #print('-----------')##
+    #print('break'+str(start_break))
+    #print(music_list)##
     music_finish = {'break'+str(start_break):[]}
-    print('-----------')##
+    #print('-----------')##
 
     music_finish['break'+str(start_break)].append(music_list[0])
     pygame.mixer.music.load("playlist/" + music_list.pop(0))
@@ -275,10 +275,10 @@ if __name__ == "__main__":
     
     waiting = True
     while waiting:
-        ts = int(datetime.now().strftime('%M'))
+        tsm = int(datetime.now().strftime('%M'))
+        tss = int(datetime.now().strftime('%S'))
         for i in date_list:
-            if ts%10 == 0 and i == time_now.strftime('%Y-%m-%d'):
-                date_list.pop(0)
+            if tss == 0 and tsm&10 ==0 and i == time_now.strftime('%Y-%m-%d') and urllib.request.urlopen('http://google.com'):
                 waiting = False
                 break
             
@@ -295,10 +295,10 @@ if __name__ == "__main__":
             for j in r_data['break'+str(start_break+b)]:
                 music_list.append(j['sound'])
 
-            print('-----------')##
-            print('-----------')##
-            print('break'+str(start_break+b))##
-            print(music_list)##
+            #print('-----------')##
+            #print('-----------')##
+            #print('break'+str(start_break+b))##
+            #print(music_list)##
 
             music_finish[list(music_finish.keys())[-1]].append(music_list[0])
             pygame.mixer.music.load("playlist/" + music_list.pop(0))
@@ -316,6 +316,6 @@ if __name__ == "__main__":
                     music_finish[list(music_finish.keys())[-1]].append(music_list[0])
                     pygame.mixer.music.queue("playlist/" + music_list.pop(0))
                     
-                    print('-----------')##
-                    print('-----------')##
-                    print(music_finish)##
+                    #print('-----------')##
+                    #print('-----------')##
+                    #print(music_finish)##
