@@ -160,7 +160,7 @@ class FeedbackSend(threading.Thread):
         self.stopped = event
 
     def run(self):
-        while not self.stopped.wait(600.0):#3600
+        while not self.stopped.wait(300.0):#3600
             send_feedback()
             
 
