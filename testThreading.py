@@ -9,7 +9,7 @@ import psutil
 import os
 import pygame
 
-time.sleep(30)
+time.sleep(1)
 
 r_data = []
 r_download = []
@@ -24,17 +24,18 @@ pygame.mixer.init()
 
 
 def getserial():
-    cpuserial = "0000000000000000"
-    try:
-        f = open('/proc/cpuinfo','r')
-        for line in f:
-            if line[0:6]=='Serial':
-                cpuserial = line[10:26]
-                f.close()
-    except:
-        cpuserial = "ERROR000000000"
+  # Extract serial from cpuinfo file
+  cpuserial = "0000000000000000"
+  try:
+    f = open('/proc/cpuinfo','r')
+    for line in f:
+      if line[0:6]=='Serial':
+        cpuserial = line[10:26]
+    f.close()
+  except:
+    cpuserial = "ERROR000000000"
 
-    return cpuserial
+  return cpuserial
     
 
 class RequestThread(threading.Thread):
@@ -52,6 +53,7 @@ class RequestThread(threading.Thread):
             try:
                 url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
                 r = requests.get(url,allow_redirects=True)
+                print('playlistresq:'+r.text)
                 with open("music.json", "w") as output:
                     json.dump(r.json(), output)
 
@@ -125,18 +127,18 @@ def send_feedback():
     except:
         print('spdtest_error')
 
-    url = 'https://api.dv8automate.com/api/player/box/feedback'
+    url = 'https://api.dv8automate.com/api/player/box/feedback/'
     myobj = {
-            'serialNumber':getserial(), #10000000ce768306
+            'serialNumber':'100000000ec590a2', #100000000ec590a2str(getserial())
             'freeSpace':str(gigabytes_avail),
             'statusBox': 'Online',
-            'speedNet':netSpeed,
+            'speedNet':netSpeed/1000000,
             'startPlayTime':s_date,
             'currentVolume':100,
             'playlist':music_finish
             }
     requests.post(url, data = myobj)
-
+    print(requests.post(url,data=myobj).text)
 
 class FeedbackSend(threading.Thread):
     def __init__(self, event):
@@ -144,7 +146,7 @@ class FeedbackSend(threading.Thread):
         self.stopped = event
 
     def run(self):
-        while not self.stopped.wait(3600.0):#3600
+        while not self.stopped.wait(30.0):#3600
             send_feedback()
 
 
@@ -184,6 +186,7 @@ if __name__ == "__main__":
 
     url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
     r = requests.get(url,allow_redirects=True)
+    print(getserial())
     
     with open("music.json", "w") as output:
         json.dump(r.json(), output)
