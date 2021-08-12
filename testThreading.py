@@ -140,10 +140,10 @@ def send_feedback():
         #print('url try')##
         url = 'https://api.dv8automate.com/api/player/box/feedback/'
         myobj = {
-                'serialNumber':'10000000ce768306',#getserial(), #100000000ec590a2str(getserial())
+                'serialNumber':getserial(), #100000000ec590a2str(getserial())
                 'freeSpace':str(gigabytes_avail),
                 'statusBox':'Online',
-                'speedNet':'netSpeed/1000000',
+                'speedNet':netSpeed/1000000,
                 'startPlayTime':s_date,
                 'currentVolume':100,
                 'playlist':str(music_finish)
