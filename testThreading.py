@@ -197,8 +197,13 @@ def loop60(x):
 
 
 if __name__ == "__main__":
-
-    try:
+    
+    net = True
+    while net:
+        if urllib.request.urlopen('http://google.com'):
+            net = False
+    
+    try: 
         url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
         r = requests.get(url,allow_redirects=True)
        # print('playlistresq:'+r.text)
@@ -215,7 +220,7 @@ if __name__ == "__main__":
     except:
         with open('music.json') as f:
             r_off = json.load(f)
-        #print("load playlist from json without internet")##
+        # print("load playlist from json without internet")##
         
     r_data = r_off['data']
     r_download = r_off['download']
@@ -278,7 +283,7 @@ if __name__ == "__main__":
         tsm = int(datetime.now().strftime('%M'))
         tss = int(datetime.now().strftime('%S'))
         for i in date_list:
-            if tss == 0 and tsm&10 ==0 and i == time_now.strftime('%Y-%m-%d') and urllib.request.urlopen('http://google.com'):
+            if tss == 0 and tsm%10 == 0 and i == time_now.strftime('%Y-%m-%d'):
                 waiting = False
                 break
             
