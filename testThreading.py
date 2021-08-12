@@ -1,88 +1,26 @@
 import threading
-import queue
 import requests
 import json
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from requests.api import request
-#import speedtest
-#for check space 
+import speedtest
 import psutil
-#from tqdm import tqdm
 import os
 import pygame
-import pause
 
-#---------- Show Run time----------
-import time
-start_time = time.time()
-#----------------------------------
+time.sleep(30)
 
+r_data = []
+r_download = []
+r_startDate = []
+r_endDate = []
+music_finish = {}
+count = 0
 
-time.sleep(1)
-
-r_old = {}
-triger = ""
-b_trg = False
-a_trg = False
-r_test = []
-d_test = []
-sd_test = []
-ed_test = []
-
-
-
-#my_queue = queue.Queue()
-
-class NineThread(threading.Thread):
-    def __init__(self, event):
-        threading.Thread.__init__(self)
-        self.stopped = event
-
-    def run(self):
-        global r_old
-        global triger
-        global b_trg  
-        global a_trg
-        global r_test
-        global d_test
-        global sd_test
-        global ed_test
-
-        while not self.stopped.wait(60.0):
-            try:
-                url = 'http://128.199.247.96:3000/api/music/getmusicloop'
-                r = requests.get(url,allow_redirects=True)
-                r_test = r.json()['data']
-                d_test = r.json()['download']
-                sd_test = r.json()['startDate']
-                ed_test = r.json()['endDate']
-
-                if triger == "":
-                    triger = str(r.json()['command'])
-                elif triger != str(r.json()['command']):
-                    #print('Triger')
-                    triger = str(r.json()['command'])
-                    a_trg = b_trg
-                    b_trg = not b_trg
-
-                #return r
-            except:
-                print("some error...")
-        
-
-class ClockThread(threading.Thread):
-    def __init__(self, event):
-        threading.Thread.__init__(self)
-        self.stopped = event
-
-    def run(self):
-        while not self.stopped.wait(1.0):
-            time_start = datetime.now()
-            hour = time_start.strftime("%H")
-            min = time_start.strftime("%M")
-            #my_queue.put(hour)
-        return hour, min
+os.environ["SDL_VIDEODRIVER"] = "dummy"
+pygame.init()
+pygame.mixer.init()
 
 
 def getserial():
@@ -97,10 +35,51 @@ def getserial():
         cpuserial = "ERROR000000000"
 
     return cpuserial
+    
+
+class RequestThread(threading.Thread):
+    def __init__(self, event):
+        threading.Thread.__init__(self)
+        self.stopped = event
+
+    def run(self):
+        global r_data
+        global r_download
+        global r_startDate
+        global r_endDate
+
+        while not self.stopped.wait(240.0):
+            try:
+                url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
+                r = requests.get(url,allow_redirects=True)
+                with open("music.json", "w") as output:
+                    json.dump(r.json(), output)
+
+                with open('music.json') as f:
+                    r_off = json.load(f)
+
+                r_data = r_off['data']
+                r_download = r_off['download']
+                r_startDate = r_off['startDate']
+                r_endDate = r_off['endDate']
+            except:
+                print("some error...")
 
 
-def download_music(d_test):
-    if str(d_test) == "True":
+class BreakChange(threading.Thread):
+    def __init__(self, event):
+        threading.Thread.__init__(self)
+        self.stopped = event
+
+    def run(self):
+        global count
+        while not self.stopped.wait(600):
+            count = 1
+        return count
+
+
+def download_music(r_download):
+    if str(r_download) == "True":
         if os.path.isdir('playlist') == False:
             os.mkdir('playlist')
 
@@ -123,50 +102,79 @@ def download_music(d_test):
     else: return None
 
 
+def delete_music():
+    url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
+    delete_r = requests.get(url,allow_redirects=True)
+
+    for i in delete_r.json()['delete']:
+        try:
+            os.remove('playlist/'+i)
+        except OSError:
+            pass
+
+
 def send_feedback():
     path = '/'
     bytes_avail = psutil.disk_usage(path).free
     gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
+    print(music_finish)
+
+    try:
+        spd_test = speedtest.Speedtest()
+        netSpeed = spd_test.download()
+    except:
+        print('spdtest_error')
 
     url = 'https://api.dv8automate.com/api/player/box/feedback'
     myobj = {
-            'serialNumber':'10000000ce768306',
+            'serialNumber':getserial(), #10000000ce768306
             'freeSpace':str(gigabytes_avail),
-            'statusBox': 'offline',
-            'speedNet':'spdTest',
-            'startPlayTime':datetime.now(),
-            'currentVolume':10
+            'statusBox': 'Online',
+            'speedNet':netSpeed,
+            'startPlayTime':s_date,
+            'currentVolume':100,
+            'playlist':music_finish
             }
     requests.post(url, data = myobj)
 
 
-def interval_loop60(x):
+class FeedbackSend(threading.Thread):
+    def __init__(self, event):
+        threading.Thread.__init__(self)
+        self.stopped = event
+
+    def run(self):
+        while not self.stopped.wait(3600.0):#3600
+            send_feedback()
+
+
+def loop60(x):
     if x == 0:
-        x = '1'
+        x = 1
         s_mins = 0
         next = False
     elif x > 0 and x <= 10:
-        x = '2'
+        x = 2
         s_mins = 10
         next = False
     elif x > 10 and x <= 20:
-        x = '3'
+        x = 3
         s_mins = 20
         next = False
     elif x > 20 and x <= 30:
-        x = '4'
+        x = 4
         s_mins = 30
         next = False
     elif x > 30 and x <= 40:
-        x = '5'
+        x = 5
         s_mins = 40
         next = False
     elif x > 40 and x <= 50:
-        x = '6'
+        x = 6
         s_mins = 50
         next = False
     else: 
-        x = '1'
+        x = 1
         s_mins = 0
         next = True
     return [x,s_mins,next]
@@ -174,121 +182,114 @@ def interval_loop60(x):
 
 if __name__ == "__main__":
 
-    pygame.init()
-    pygame.mixer.init()
-
-    url = 'http://128.199.247.96:3000/api/music/getmusicloop'
+    url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
     r = requests.get(url,allow_redirects=True)
-    r_test = r.json()['data']
-    d_test = r.json()['download']
-    sd_test = r.json()['startDate']
-    ed_test = r.json()['endDate']
+    
+    with open("music.json", "w") as output:
+        json.dump(r.json(), output)
 
-    print(d_test)##
-    print('-----------')##
-    print(sd_test)##
-    print('-----------')##
-    print(ed_test)##
-    print('-----------')##
+    with open('music.json') as f:
+        r_off = json.load(f)
 
-    download_music(d_test)
+    r_data = r_off['data']
+    r_download = r_off['download']
+    r_startDate = r_off['startDate']
+    r_endDate = r_off['endDate']
+
+    start_date= datetime.strptime(r_startDate,'%Y-%m-%d')
+    end_date= datetime.strptime(r_endDate,'%Y-%m-%d')
+    date_interval = end_date - start_date
+    date_list = []
+
+    for single_date in (start_date + timedelta(n) for n in range(date_interval.days+1)):
+        date_list.append(single_date.strftime('%Y-%m-%d'))
+
+    delete_music()
+    download_music(r_download)
 
     stopFlag = threading.Event()
-    thread = NineThread(stopFlag)
-    thread.start()
+    request_thread = RequestThread(stopFlag)
+    request_thread.start()
 
-    # stopFlag = threading.Event()
-    # thread2 = ClockThread(stopFlag)
-    # thread2.start()
-    #print('ssss')
-    #timee = my_queue.get()
-    #print(timee)
+    break_thread = BreakChange(stopFlag)
+    feedback_thread = FeedbackSend(stopFlag)
+    feedback_thread.start()
 
     music_list=[]
-    music_list_all=[]##
-    music_list3=[]##
-    music_list4=[]##
-    music_list5=[]##
-    music_list6=[]##
+    b = 0
 
     time_now = datetime.now()
-    hour = time_now.strftime('%H')
-    mins = time_now.strftime('%M')
+    s_hour = int(time_now.strftime('%H'))
+    s_mins = time_now.strftime('%M')
+    s_date = time_now.strftime("%d/%m/%Y, %H:%M:%S")
     
-    b_interval = interval_loop60(int(mins))
+    b_interval = loop60(int(s_mins))
 
-    
-    #print(r_test['loop1'])##
-
-    # for i in r_test['loop'+hour][(b_interval[0])]:##
-    #     print(i)##
     if b_interval[2] == True:
-        loop_count = int(hour)+2
+        s_hour = s_hour + 1
+        start_break = (6*s_hour)+b_interval[0]
     else:
-        loop_count = int(hour)+1
+        start_break = (6*s_hour)+b_interval[0]
 
-    print('loop'+str(loop_count))
-    print(('break'+b_interval[0]))##
+    for j in r_data['break'+str(start_break)]:
+        music_list.append(j['sound'])
 
     print('-----------')##
+    print('break'+str(start_break))
+    print(music_list)##
+    music_finish = {'break'+str(start_break):[]}
+    print('-----------')##
 
-    for i in range (loop_count,24):
-        if str(i) == str(loop_count):
-            for j in range(int(b_interval[0]),7):
-                for l in r_test['loop'+str(loop_count)]['break'+str(j)]:
-                    music_list.append(l['sound']) 
-        else:
-            for k in r_test['loop'+str(i)]:
-                for m in r_test['loop'+str(i)][str(k)]:
-                    music_list.append(m['sound'])
-                
-    #print(music_list[0])
-
-
-    #-----------directory for pi--------------
-    # pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
-    # pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
-
-    #-----------directory form pc--------------
+    music_finish['break'+str(start_break)].append(music_list[0])
     pygame.mixer.music.load("playlist/" + music_list.pop(0))
+    music_finish['break'+str(start_break)].append(music_list[0])
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+    
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
     
-    pause.until(datetime(2021, 8, 7, (loop_count - 1), b_interval[1], 00))
-
+    waiting = True
+    while waiting:
+        ts = int(datetime.now().strftime('%M'))
+        for i in date_list:
+            if ts%10 == 0 and i == time_now.strftime('%Y-%m-%d'):
+                date_list.pop(0)
+                waiting = False
+                break
+            
     pygame.mixer.music.play()
-    print("Play first")
-    running = True
-    while running:
-        if a_trg != b_trg:
+    break_thread.start()
+
+    while True:
+        if count == 1:
             pygame.mixer.music.stop()
-            music_list=[]
-            time.sleep(1)
-            for i in r_test:#+str(j)
-                music_list.append(i['sound'])
+            b = b + 1
+            music_list = []
+            music_finish['break'+str(start_break+b)] = []
 
-            #print('play again')##
-            print(music_list)
-            #-----------directory for pi--------------
-            #pygame.mixer.music.load("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
+            for j in r_data['break'+str(start_break+b)]:
+                music_list.append(j['sound'])
 
-            #-----------directory form pc--------------
+            print('-----------')##
+            print('-----------')##
+            print('break'+str(start_break+b))##
+            print(music_list)##
+
+            music_finish[list(music_finish.keys())[-1]].append(music_list[0])
             pygame.mixer.music.load("playlist/" + music_list.pop(0))
-
-            #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+            music_finish['break'+str(start_break)].append(music_list[0])
+            pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+    
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
+    
             pygame.mixer.music.play()
-            print("Play again")##
-            a_trg = b_trg
+            count = 0
+        
         for event in pygame.event.get():
-
             if event.type == pygame.USEREVENT:    
                 if len ( music_list ) > 0:
-                    #-----------directory for pi--------------       
-                    #pygame.mixer.music.queue ("/home/pi/raspberrypiMusicBox/playlist/" + music_list.pop(0))
-
-                    #-----------directory form pc--------------
+                    music_finish[list(music_finish.keys())[-1]].append(music_list[0])
                     pygame.mixer.music.queue("playlist/" + music_list.pop(0))
-
-               # print('aa')
-    print("--- %s seconds ---" % (time.time() - start_time)) #show time ##
+                    
+                    print('-----------')##
+                    print('-----------')##
+                    print(music_finish)##
