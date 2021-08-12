@@ -22,6 +22,8 @@ Project to make raspberry pi 4 like music box can command the playlist from ever
 
 1.Create service file in /lib/systemd/system/nine.service
 
+```sudo nano /lib/systemd/system/nine.service```
+
 ```[Unit]
 Description=Dummy Service
 After=network-online.target network.target sound.target syslog.target
@@ -83,13 +85,47 @@ update pygame 1.9 to 2.0
 
 # Install Anydesk
 ```sudo apt update```
+
 ```sudo apt full-upgrade```
+
 ```wget https://download.anydesk.com/rpi/anydesk_6.1.1-1_armhf.deb```
+
 ```sudo dpkg -i anydesk_6.1.1-1_armhf.deb```
+
 ```sudo apt-get install -f```
 
 # Fake monitor for Anydesk
 https://askubuntu.com/questions/453109/add-fake-display-when-no-monitor-is-plugged-in
+
+```sudo apt-get install xserver-xorg-video-dummy```
+
+write it in the /usr/share/X11/xorg.conf.d/xorg.conf
+
+```sudo nano /usr/share/X11/xorg.conf.d/xorg.conf```
+
+```
+Section "Device"
+    Identifier  "Configured Video Device"
+    Driver      "dummy"
+EndSection
+
+Section "Monitor"
+    Identifier  "Configured Monitor"
+    HorizSync 31.5-48.5
+    VertRefresh 50-70
+EndSection
+
+Section "Screen"
+    Identifier  "Default Screen"
+    Monitor     "Configured Monitor"
+    Device      "Configured Video Device"
+    DefaultDepth 24
+    SubSection "Display"
+    Depth 24
+    Modes "1024x800"
+    EndSubSection
+EndSection
+```
 
 # Check Serial
 
