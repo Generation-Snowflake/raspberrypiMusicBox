@@ -53,7 +53,7 @@ class RequestThread(threading.Thread):
             try:
                 url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
                 r = requests.get(url,allow_redirects=True)
-                print('playlistresq:'+r.text)
+                # print('playlistresq:'+r.text)
                 with open("music.json", "w") as output:
                     json.dump(r.json(), output)
 
@@ -82,40 +82,47 @@ class BreakChange(threading.Thread):
 
 def download_music(r_download):
     if str(r_download) == "True":
-        if os.path.isdir('playlist') == False:
-            os.mkdir('playlist')
+            if os.path.isdir('playlist') == False:
+                os.mkdir('playlist')
+            try:
+                url = 'http://128.199.247.96:3000/api/music'
+                playlist = requests.get(url,allow_redirects=True)
+                playlist = str(playlist.content).split(',')
 
-        url = 'http://128.199.247.96:3000/api/music'
-        playlist = requests.get(url,allow_redirects=True)
-        playlist = str(playlist.content).split(',')
+                playlist_lst = str(playlist).split('"')
+                playlist_lst.pop(playlist_lst.index("['b\\'["))
+                playlist_lst.pop(playlist_lst.index("]\\'']"))
 
-        playlist_lst = str(playlist).split('"')
-        playlist_lst.pop(playlist_lst.index("['b\\'["))
-        playlist_lst.pop(playlist_lst.index("]\\'']"))
+                for i,enum in enumerate(playlist_lst):
+                    if enum == "', '":
+                        playlist_lst.pop(i)
 
-        for i,enum in enumerate(playlist_lst):
-            if enum == "', '":
-                playlist_lst.pop(i)
-
-        for j in range (0,len(playlist_lst)):
-            music = playlist_lst[j].split('/')
-            music_download = requests.get(playlist_lst[j],allow_redirects=True)
-            open('playlist/'+music[-1],('wb')).write(music_download.content)
-    else: return None
+                for j in range (0,len(playlist_lst)):
+                    music = playlist_lst[j].split('/')
+                    music_download = requests.get(playlist_lst[j],allow_redirects=True)
+                    open('playlist/'+music[-1],('wb')).write(music_download.content)
+            except:
+                print('download_fail')
+    else:
+            return None
 
 
 def delete_music():
-    url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
-    delete_r = requests.get(url,allow_redirects=True)
+    try:
+        url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
+        delete_r = requests.get(url,allow_redirects=True)
 
-    for i in delete_r.json()['delete']:
-        try:
-            os.remove('playlist/'+i)
-        except OSError:
-            pass
+        for i in delete_r.json()['delete']:
+            try:
+                os.remove('playlist/'+i)
+            except OSError:
+                pass
+    except:
+        print("delete")
 
 
 def send_feedback():
+    print('firstFeedback')
     path = '/'
     bytes_avail = psutil.disk_usage(path).free
     gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
@@ -125,20 +132,25 @@ def send_feedback():
         spd_test = speedtest.Speedtest()
         netSpeed = spd_test.download()
     except:
+        netSpeed = '0'
         print('spdtest_error')
 
-    url = 'https://api.dv8automate.com/api/player/box/feedback/'
-    myobj = {
-            'serialNumber':'100000000ec590a2', #100000000ec590a2str(getserial())
-            'freeSpace':str(gigabytes_avail),
-            'statusBox': 'Online',
-            'speedNet':netSpeed/1000000,
-            'startPlayTime':s_date,
-            'currentVolume':100,
-            'playlist':music_finish
-            }
-    requests.post(url, data = myobj)
-    print(requests.post(url,data=myobj).text)
+    try:
+        print('url try')
+        url = 'https://api.dv8automate.com/api/player/box/feedback/'
+        myobj = {
+                'serialNumber':getserial(), #100000000ec590a2str(getserial())
+                'freeSpace':str(gigabytes_avail),
+                'statusBox': 'Online',
+                'speedNet':netSpeed/1000000,
+                'startPlayTime':s_date,
+                'currentVolume':100,
+                'playlist':music_finish
+                }
+        x = requests.post(url, data = myobj)
+        print(x.text)
+    except:
+        print('request fail')
 
 class FeedbackSend(threading.Thread):
     def __init__(self, event):
@@ -146,8 +158,10 @@ class FeedbackSend(threading.Thread):
         self.stopped = event
 
     def run(self):
-        while not self.stopped.wait(30.0):#3600
+        while not self.stopped.wait(20.0):#3600
+            print("FeedbackClass")
             send_feedback()
+            
 
 
 def loop60(x):
@@ -184,16 +198,25 @@ def loop60(x):
 
 if __name__ == "__main__":
 
-    url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
-    r = requests.get(url,allow_redirects=True)
-    print(getserial())
-    
-    with open("music.json", "w") as output:
-        json.dump(r.json(), output)
+    try:
+        url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
+        r = requests.get(url,allow_redirects=True)
+       # print('playlistresq:'+r.text)
+        with open("music.json", "w") as output:
+            json.dump(r.json(), output)
 
-    with open('music.json') as f:
-        r_off = json.load(f)
+        with open('music.json') as f:
+            r_off = json.load(f)
 
+        r_data = r_off['data']
+        r_download = r_off['download']
+        r_startDate = r_off['startDate']
+        r_endDate = r_off['endDate']
+    except:
+        with open('music.json') as f:
+            r_off = json.load(f)
+        print("some error...")
+        
     r_data = r_off['data']
     r_download = r_off['download']
     r_startDate = r_off['startDate']
