@@ -37,9 +37,13 @@ https://askubuntu.com/questions/453109/add-fake-display-when-no-monitor-is-plugg
 
 ```sudo apt-get install xserver-xorg-video-dummy```
 
+เปิด editor ที่ชื่อ nano 
+
 write it in the /usr/share/X11/xorg.conf.d/xorg.conf
 
 ```sudo nano /usr/share/X11/xorg.conf.d/xorg.conf```
+
+copy code ข้างล่างนี้ทั้งหมดมาใส่
 
 ```
 Section "Device"
@@ -65,7 +69,9 @@ Section "Screen"
 EndSection
 ```
 
+กด ctl+o แล้ว enter เพื่อ save 
 
+กด ctl+x แล้ว enter เพื่อ ออก
 
 ถอดจอ ถอดสายไฟ 
 
