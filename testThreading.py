@@ -9,8 +9,10 @@ import psutil
 import os
 import pygame
 import urllib.request
+import multiprocessing
 
-time.sleep(30)
+
+#time.sleep(30)
 
 r_data = []
 r_download = []
@@ -38,10 +40,10 @@ def getserial():
 
     return cpuserial
     
-
-class RequestThread(threading.Thread):
+############################################################################
+'''class RequestThread(multiprocessing.Process):
     def __init__(self, event):
-        threading.Thread.__init__(self)
+        multiprocessing.Process.__init__(self)
         self.stopped = event
 
     def run(self):
@@ -66,20 +68,82 @@ class RequestThread(threading.Thread):
                 r_startDate = r_off['startDate']
                 r_endDate = r_off['endDate']
             except:
-                print("some error...")
+                print("some error...")'''
+#########################################################################3
+def requestProcess():
+    global r_data
+    global r_download
+    global r_startDate
+    global r_endDate
+    
+    while True:
+        print('-----------------------')##
+        print('requestProcess')##
+        print('-----------------------')##
+        try:
+            url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
+            r = requests.get(url,allow_redirects=True)
+            # print('playlistresq:'+r.text)
+            with open("music.json", "w") as output:
+                json.dump(r.json(), output)
 
+            with open('music.json') as f:
+                r_off = json.load(f)
 
-class BreakChange(threading.Thread):
+            r_data = r_off['data']
+            r_download = r_off['download']
+            r_startDate = r_off['startDate']
+            r_endDate = r_off['endDate']
+        except:
+            print("some error...")
+        time.sleep(240)
+
+#######################################################################3
+'''class BreakChange(multiprocessing.Process):
     def __init__(self, event):
-        threading.Thread.__init__(self)
+        multiprocessing.Process.__init__(self)
         self.stopped = event
 
     def run(self):
         global count
         while not self.stopped.wait(600):
             count = 1
-        return count
+        return count'''
+###################################################################
+def breakProcess():
+    while True:
+        time.sleep(10)
+        print('-----------------------')##
+        print('breakProcess')##
+        print('-----------------------')##
+        count = 1
+        print('NINE')
+        b = 0
+        if count == 1:
+            print('ADS<MFNADLJKFNLADKVNALDKFNLKNXNLAMEDFNK')
+            pygame.mixer.music.stop()
+            b = b + 1
+            music_list = []
+            music_finish['break'+str(start_break+b)] = []
 
+            for j in r_data['break'+str(start_break+b)]:
+                music_list.append(j['sound'])
+
+            #print('-----------')##
+            #print('-----------')##
+            #print('break'+str(start_break+b))##
+            #print(music_list)##
+
+            music_finish[list(music_finish.keys())[-1]].append(music_list[0])
+            pygame.mixer.music.load("playlist/" + music_list.pop(0))
+            music_finish['break'+str(start_break)].append(music_list[0])
+            pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+
+            pygame.mixer.music.set_endevent(pygame.USEREVENT)
+
+            pygame.mixer.music.play()
+            count = 0
+#####################################################################3
 
 def download_music(r_download):
     if str(r_download) == "True":
@@ -124,45 +188,51 @@ def delete_music():
 
 def send_feedback():
     #print('firstFeedback')##
-    path = '/'
-    bytes_avail = psutil.disk_usage(path).free
-    gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
-    #print(music_finish)##
+    while True:##
+        time.sleep(300)
+        print('-----------------------')##
+        print('feedbackProcess')##
+        print('-----------------------')##
+        path = '/'
+        bytes_avail = psutil.disk_usage(path).free
+        gigabytes_avail = bytes_avail / 1024 / 1024 / 1024
+        #print(music_finish)##
 
-    try:
-        spd_test = speedtest.Speedtest()
-        netSpeed = spd_test.download()
-    except:
-        netSpeed = '0'
-        print('spdtest_error')##
+        try:
+            spd_test = speedtest.Speedtest()
+            netSpeed = spd_test.download()
+        except:
+            netSpeed = '0'
+            print('spdtest_error')##
 
-    try:
-        #print('url try')##
-        url = 'https://api.dv8automate.com/api/player/box/feedback/'
-        myobj = {
-                'serialNumber':getserial(), #100000000ec590a2str(getserial())
-                'freeSpace':str(gigabytes_avail),
-                'statusBox':'Online',
-                'speedNet':netSpeed/1000000,
-                'startPlayTime':s_date,
-                'currentVolume':100,
-                'playlist':music_finish
-                }
-        x = requests.post(url, data = myobj)
-        #print(x.text)##
-    except:
-        print('request fail')
+        try:
+            #print('url try')##
+            url = 'https://api.dv8automate.com/api/player/box/feedback/'
+            myobj = {
+                    'serialNumber':getserial(), #100000000ec590a2str(getserial())
+                    'freeSpace':str(gigabytes_avail),
+                    'statusBox':'Online',
+                    'speedNet':netSpeed/1000000,
+                    'startPlayTime':s_date,
+                    'currentVolume':100,
+                    'playlist':str(music_finish)
+                    }
+            x = requests.post(url, data = myobj)
+            print(x.text)##
+        except:
+            print('request fail')
 
-
-class FeedbackSend(threading.Thread):
+#########################################################################
+'''class FeedbackSend(multiprocessing.Process):
     def __init__(self, event):
-        threading.Thread.__init__(self)
+        multiprocessing.Process.__init__(self)
         self.stopped = event
 
     def run(self):
-        while not self.stopped.wait(3600.0):#3600
-            send_feedback()
-            
+        while not self.stopped.wait(20.0):#3600
+            send_feedback()'''
+#####################################################################     
+     
 
 def loop60(x):
     if x == 0:
@@ -203,6 +273,8 @@ if __name__ == "__main__":
         if urllib.request.urlopen('http://google.com'):
             net = False
     
+    
+    
     try: 
         url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
         r = requests.get(url,allow_redirects=True)
@@ -238,14 +310,20 @@ if __name__ == "__main__":
     delete_music()
     download_music(r_download)
 
-    stopFlag = threading.Event()
+########################### Threading ##########################################3
+    '''stopFlag = threading.Event()
     request_thread = RequestThread(stopFlag)
     request_thread.start()
 
     break_thread = BreakChange(stopFlag)
     feedback_thread = FeedbackSend(stopFlag)
-    feedback_thread.start()
-
+    feedback_thread.start()'''
+    
+    request_process = multiprocessing.Process(target=requestProcess)
+    request_process.start()
+    feedback_process = multiprocessing.Process(target=send_feedback)
+    feedback_process.start()
+##########################################################################
     music_list=[]
     b = 0
 
@@ -277,8 +355,9 @@ if __name__ == "__main__":
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
-    
-    waiting = True
+    print('--------waiting to play music---------')##
+    print(music_list)
+    waiting = False ########## True
     while waiting:
         tsm = int(datetime.now().strftime('%M'))
         tss = int(datetime.now().strftime('%S'))
@@ -286,12 +365,20 @@ if __name__ == "__main__":
             if tss == 0 and tsm%10 == 0 and i == time_now.strftime('%Y-%m-%d'):
                 waiting = False
                 break
-            
+    print('-------Play-------')
     pygame.mixer.music.play()
-    break_thread.start()
+##################################################################
+    '''break_thread.start()'''
+    break_process = multiprocessing.Process(target=breakProcess)
+    break_process.start()
+#######################################################3#############
 
     while True:
-        if count == 1:
+        #print('--------Count is ------')
+        #print(count)
+        #print('----------------------')
+        '''if count == 1:
+            print('NININININININININININININININININININININININININININININI')
             pygame.mixer.music.stop()
             b = b + 1
             music_list = []
@@ -313,7 +400,7 @@ if __name__ == "__main__":
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
     
             pygame.mixer.music.play()
-            count = 0
+            count = 0'''
         
         for event in pygame.event.get():
             if event.type == pygame.USEREVENT:    
