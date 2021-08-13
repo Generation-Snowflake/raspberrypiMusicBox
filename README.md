@@ -2,6 +2,74 @@
 
 Project to make raspberry pi 4 like music box can command the playlist from every where.....
 
+-----------------------------------------------
+
+ถ้ามันถามรหัส pi คือ 1
+
+# วิธีลงกล่องต่อจากที่ clone มา
+
+เช็ค Serial number จดบันทึกไว้กับกล่อง
+
+```cat /proc/cpuinfo | grep Serial | cut -d ' ' -f 2```
+
+ลง Anydesk 
+
+# Install Anydesk
+
+```sudo apt update```
+
+```sudo apt full-upgrade```
+
+```wget https://download.anydesk.com/rpi/anydesk_6.1.1-1_armhf.deb```
+
+```sudo dpkg -i anydesk_6.1.1-1_armhf.deb```
+
+```sudo apt-get install -f```
+
+เข้าไปที่ anydesk ตั้ง Fix รหัสไว้เป็น wmc12345
+
+จด เลขไอดี anydesk ไว้กับกล่อง
+
+ทำ Fake monitor เพื่อให้กล่องสามารถรีโมทได้โดยไม่ต้องต่อจอ
+
+# Fake monitor for Anydesk
+https://askubuntu.com/questions/453109/add-fake-display-when-no-monitor-is-plugged-in
+
+```sudo apt-get install xserver-xorg-video-dummy```
+
+write it in the /usr/share/X11/xorg.conf.d/xorg.conf
+
+```sudo nano /usr/share/X11/xorg.conf.d/xorg.conf```
+
+```
+Section "Device"
+    Identifier  "Configured Video Device"
+    Driver      "dummy"
+EndSection
+
+Section "Monitor"
+    Identifier  "Configured Monitor"
+    HorizSync 31.5-48.5
+    VertRefresh 50-70
+EndSection
+
+Section "Screen"
+    Identifier  "Default Screen"
+    Monitor     "Configured Monitor"
+    Device      "Configured Video Device"
+    DefaultDepth 24
+    SubSection "Display"
+    Depth 24
+    Modes "1024x800"
+    EndSubSection
+EndSection
+```
+
+
+
+ถอดจอ ถอดสายไฟ 
+
+
 # install this pkg
 
 ```sudo pip3 install psutil ```
