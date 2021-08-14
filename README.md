@@ -204,3 +204,37 @@ EndSection
 # Check Serial
 
 ```cat /proc/cpuinfo | grep Serial | cut -d ' ' -f 2```
+
+# Set crontab 
+
+`sudo nano launcher.sh`
+
+```
+#!/bin/sh
+#sudo launcher.sh
+
+cd /
+cd home/pi/raspberrypiMusicBox
+sudo python3 testThreading.py
+```
+
+`sudo chmod 777 launcher.sh`
+
+test run
+
+`sh launcher.sh`
+
+Create logs folder
+
+`mkdir logs`
+
+`sudo crontab -e `
+
+`reboot sh /home/pi/launcher.sh >/home/pi/logs/cronlog 2>&1`
+
+reboot 
+
+
+
+
+
