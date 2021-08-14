@@ -230,7 +230,7 @@ Create logs folder
 
 `sudo crontab -e `
 
-`reboot sh /home/pi/launcher.sh >/home/pi/logs/cronlog 2>&1`
+`@reboot sh /home/pi/launcher.sh >/home/pi/logs/cronlog 2>&1`
 
 reboot 
 
