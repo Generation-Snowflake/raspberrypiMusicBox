@@ -303,8 +303,11 @@ if __name__ == "__main__":
             music_list = []
             music_finish['break'+str(start_break+b)] = []
 
+            
             if 'break'+str(start_break+b) == 'break145':
-                for k in r_data['break1']:
+                start_break=1
+                b=0
+                for k in r_data['break'+str(start_break+b)]:
                     music_list.append(k['sound'])    
             else:
                 for j in r_data['break'+str(start_break+b)]:
