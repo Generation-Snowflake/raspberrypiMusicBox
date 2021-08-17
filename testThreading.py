@@ -284,6 +284,7 @@ if __name__ == "__main__":
     
     waiting = True
     while waiting:
+        time.sleep(0.5)
         tsm = int(datetime.now().strftime('%M'))
         tss = int(datetime.now().strftime('%S'))
         for i in date_list:
@@ -295,6 +296,7 @@ if __name__ == "__main__":
     break_thread.start()
 
     while True:
+        time.sleep(1)
         if count == 1:
             pygame.mixer.music.stop()
             b = b + 1
