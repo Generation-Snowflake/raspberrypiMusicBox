@@ -301,7 +301,7 @@ if __name__ == "__main__":
             pygame.mixer.music.stop()
             b = b + 1
             music_list = []
-            music_finish['break'+str(start_break+b)] = []
+            #music_finish['break'+str(start_break+b)] = []
 
             
             if 'break'+str(start_break+b) == 'break145':
@@ -312,6 +312,8 @@ if __name__ == "__main__":
             else:
                 for j in r_data['break'+str(start_break+b)]:
                     music_list.append(j['sound'])
+                    
+            music_finish['break'+str(start_break+b)] = []
 
             #print('-----------')##
             #print('-----------')##
