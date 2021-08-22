@@ -262,8 +262,9 @@ if __name__ == "__main__":
     else:
         start_break = (6*s_hour)+b_interval[0]
 
-    if 'break'+str(start_break+b) == 'break145':
-        for l in r_data['break1']:
+    if 'break'+str(start_break) == 'break145':
+        start_break = 1
+        for l in r_data['break'+str(start_break)]:
             music_list.append(l['sound'])
     else:
         for m in r_data['break'+str(start_break)]:
