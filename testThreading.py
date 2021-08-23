@@ -52,7 +52,7 @@ class RequestThread(threading.Thread):
 
         while not self.stopped.wait(240.0):
             try:
-                url = 'http://128.199.247.96:3000/api/music/getmusicloop/10000000fb2a2f51'#+getserial()
+                url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()#10000000fb2a2f51'
                 r = requests.get(url,allow_redirects=True)
                 # print('playlistresq:'+r.text)
                 with open("music.json", "w") as output:
@@ -204,7 +204,7 @@ if __name__ == "__main__":
             net = False
     
     try: 
-        url = 'http://128.199.247.96:3000/api/music/getmusicloop/10000000fb2a2f51'#+getserial()
+        url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()#10000000fb2a2f51
         r = requests.get(url,allow_redirects=True)
        # print('playlistresq:'+r.text)
         with open("music.json", "w") as output:
