@@ -262,23 +262,24 @@ if __name__ == "__main__":
     else:
         start_break = (6*s_hour)+b_interval[0]
 
-    if 'break'+str(start_break) == 'break145':
+    if 'break'+str(start_break+b) == 'break145':
         start_break = 1
-        for l in r_data['break'+str(start_break)]:
+        for l in r_data['break'+str(start_break+b)]:
             music_list.append(l['sound'])
     else:
-        for m in r_data['break'+str(start_break)]:
+        for m in r_data['break'+str(start_break+b)]:
             music_list.append(m['sound'])
 
     #print('-----------')##
     #print('break'+str(start_break))
     #print(music_list)##
-    music_finish = {'break'+str(start_break):[]}
+    music_finish = {'break'+str(start_break+b):[]}
+    music_finish['time'+str(start_break+b)] = []
     #print('-----------')##
 
-    music_finish['break'+str(start_break)].append(music_list[0])
+    music_finish['break'+str(start_break+b)].append(music_list[0])
     pygame.mixer.music.load("playlist/" + music_list.pop(0))
-    music_finish['break'+str(start_break)].append(music_list[0])
+    music_finish['break'+str(start_break+b)].append(music_list[0])
     pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     
     pygame.mixer.music.set_endevent(pygame.USEREVENT)
@@ -294,6 +295,7 @@ if __name__ == "__main__":
                 break
             
     pygame.mixer.music.play()
+    music_finish['time'+str(start_break+b)].append(datetime.now().strftime("%H:%M:%S"))
     break_thread.start()
 
     while True:
@@ -315,16 +317,17 @@ if __name__ == "__main__":
                     music_list.append(j['sound'])
                     
             music_finish['break'+str(start_break+b)] = []
+            music_finish['time'+str(start_break+b)] = []
 
             #print('-----------')##
             #print('-----------')##
             #print('break'+str(start_break+b))##
             #print(music_list)##
 
-            music_finish[list(music_finish.keys())[-1]].append(music_list[0])
+            music_finish['break'+str(start_break+b)].append(music_list[0])
             pygame.mixer.music.load("playlist/" + music_list.pop(0))
-            music_finish['break'+str(start_break)].append(music_list[0])
-            pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
+            #music_finish['break'+str(start_break+b)].append(music_list[0])
+            #pygame.mixer.music.queue ("playlist/" + music_list.pop(0))
     
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
     
@@ -332,9 +335,10 @@ if __name__ == "__main__":
             count = 0
         
         for event in pygame.event.get():
-            if event.type == pygame.USEREVENT:    
+            if event.type == pygame.USEREVENT:
+                music_finish['time'+str(start_break+b)].append(datetime.now().strftime("%H:%M:%S"))
                 if len ( music_list ) > 0:
-                    music_finish[list(music_finish.keys())[-1]].append(music_list[0])
+                    music_finish['break'+str(start_break+b)].append(music_list[0])
                     pygame.mixer.music.queue("playlist/" + music_list.pop(0))
                     
                     #print('-----------')##
