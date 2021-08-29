@@ -20,8 +20,9 @@ music_finish = {}
 count = 0
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
+
 pygame.init()
-pygame.mixer.init(400,-16,1,1024)
+pygame.mixer.init(44100,-16,8129)
 
 
 def getserial():
@@ -52,7 +53,7 @@ class RequestThread(threading.Thread):
 
         while not self.stopped.wait(240.0):
             try:
-                url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()#10000000fb2a2f51'
+                url = 'http://128.199.247.96:3000/api/music/getmusicloop/10000000fb2a2f51'
                 r = requests.get(url,allow_redirects=True)
                 # print('playlistresq:'+r.text)
                 with open("music.json", "w") as output:
@@ -65,6 +66,10 @@ class RequestThread(threading.Thread):
                 r_download = r_off['download']
                 r_startDate = r_off['startDate']
                 r_endDate = r_off['endDate']
+                volume = alsaaudio.Mixer()
+                current_volume = volume.getvolume()
+                volume.setvolume(r_off['volume'])
+                print(current_volume)
             except:
                 print("some error...")
 
@@ -204,7 +209,7 @@ if __name__ == "__main__":
             net = False
     
     try: 
-        url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()#10000000fb2a2f51
+        url = 'http://128.199.247.96:3000/api/music/getmusicloop/10000000fb2a2f51'
         r = requests.get(url,allow_redirects=True)
        # print('playlistresq:'+r.text)
         with open("music.json", "w") as output:
@@ -217,6 +222,10 @@ if __name__ == "__main__":
         r_download = r_off['download']
         r_startDate = r_off['startDate']
         r_endDate = r_off['endDate']
+        volume = alsaaudio.Mixer()
+        current_volume = volume.getvolume()
+        volume.setvolume(r_off['volume'])
+        print(current_volume)
     except:
         with open('music.json') as f:
             r_off = json.load(f)
