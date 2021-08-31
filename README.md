@@ -234,7 +234,12 @@ Create logs folder
 
 reboot 
 
+# Set crontab for reboot every day
 
+sudo crontab -e
 
-
+# For more information see the manual pages of crontab(5) and cron(8)
+#
+# m h  dom mon dow   command
+44 14 * * * /sbin/shutdown -r now
 
