@@ -243,3 +243,19 @@ sudo crontab -e
 # m h  dom mon dow   command
 44 14 * * * /sbin/shutdown -r now
 
+
+# วิธีปิดตัว AUX ไปใช้ตัว USB แทน
+
+1.Disable onboard audio
+
+Open `/etc/modprobe.d/raspi-blacklist.conf and add blacklist snd_bcm2835.`
+
+2.Allow the USB audio device to be the default device.
+
+Open `/lib/modprobe.d/aliases.conf` and comment out the line `options snd-usb-audio index=-2`
+
+3.
+
+`sudo reboot`
+
+
