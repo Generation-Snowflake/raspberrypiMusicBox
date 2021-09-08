@@ -258,4 +258,13 @@ Open `/lib/modprobe.d/aliases.conf` and comment out the line `options snd-usb-au
 
 `sudo reboot`
 
+# Set buffer
+
+`sudo nano /etc/pulse/daemon.conf`
+
+เลื่อนมาล่างสุดแก้ค่าเป็น 
+
+; default-fragments = 5
+; default-fragment-size-msec = 2
+
 
