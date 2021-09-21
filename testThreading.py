@@ -53,7 +53,7 @@ class RequestThread(threading.Thread):
 
         while not self.stopped.wait(240.0):
             try:
-                url = 'http://128.199.247.96:3000/api/music/getmusicloop/10000000fb2a2f51'
+                url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
                 r = requests.get(url,allow_redirects=True)
                 # print('playlistresq:'+r.text)
                 with open("music.json", "w") as output:
@@ -91,7 +91,7 @@ def download_music(r_download):
             if os.path.isdir('playlist') == False:
                 os.mkdir('playlist')
             try:
-                url = 'http://128.199.247.96:3000/api/music'
+                url = 'https://api.dv8automate.com/api/music/'+getserial()
                 playlist = requests.get(url,allow_redirects=True)
                 playlist = str(playlist.content).split(',')
 
@@ -209,7 +209,7 @@ if __name__ == "__main__":
             net = False
     
     try: 
-        url = 'http://128.199.247.96:3000/api/music/getmusicloop/10000000fb2a2f51'
+        url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
         r = requests.get(url,allow_redirects=True)
        # print('playlistresq:'+r.text)
         with open("music.json", "w") as output:
