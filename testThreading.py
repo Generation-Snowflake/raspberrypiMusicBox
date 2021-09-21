@@ -9,6 +9,7 @@ import psutil
 import os
 import pygame
 import urllib.request
+import alsaaudio
 
 time.sleep(30)
 
@@ -67,9 +68,10 @@ class RequestThread(threading.Thread):
                 r_download = r_off['download']
                 r_startDate = r_off['startDate']
                 r_endDate = r_off['endDate']
+                r_volume = r_off['volume']
                 volume = alsaaudio.Mixer()
                 current_volume = volume.getvolume()
-                volume.setvolume(r_off['volume'])
+                volume.setvolume(int(r_volume))
                 print('Requested')
                 print('Volume =', current_volume)
             except:
@@ -230,9 +232,10 @@ if __name__ == "__main__":
         r_download = r_off['download']
         r_startDate = r_off['startDate']
         r_endDate = r_off['endDate']
+        r_volume = r_off['volume']
         volume = alsaaudio.Mixer()
         current_volume = volume.getvolume()
-        volume.setvolume(r_off['volume'])
+        volume.setvolume(int(r_volume))
         print('volume =', current_volume)
     except:
         with open('music.json') as f:
