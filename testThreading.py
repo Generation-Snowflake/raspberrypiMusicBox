@@ -53,7 +53,7 @@ class RequestThread(threading.Thread):
 
         while not self.stopped.wait(240.0):
             try:
-                url = 'http://128.199.247.96:3000/api/music/getmusicloop/10000000fb2a2f51'
+                url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
                 r = requests.get(url,allow_redirects=True)
                 # print('playlistresq:'+r.text)
                 with open("music.json", "w") as output:
@@ -69,9 +69,10 @@ class RequestThread(threading.Thread):
                 volume = alsaaudio.Mixer()
                 current_volume = volume.getvolume()
                 volume.setvolume(r_off['volume'])
-                print(current_volume)
+                print('Requested')
+                print('Volume =', current_volume)
             except:
-                print("some error...")
+                print("Request error...")
 
 
 class BreakChange(threading.Thread):
@@ -91,7 +92,7 @@ def download_music(r_download):
             if os.path.isdir('playlist') == False:
                 os.mkdir('playlist')
             try:
-                url = 'http://128.199.247.96:3000/api/music'
+                url = 'https://api.dv8automate.com/api/music/'+getserial()
                 playlist = requests.get(url,allow_redirects=True)
                 playlist = str(playlist.content).split(',')
 
@@ -107,9 +108,11 @@ def download_music(r_download):
                     music = playlist_lst[j].split('/')
                     music_download = requests.get(playlist_lst[j],allow_redirects=True)
                     open('playlist/'+music[-1],('wb')).write(music_download.content)
+                print('Downloaded')
             except:
-                print('download_fail')
+                print('Download fail...')
     else:
+        print('Not download')
             return None
 
 
@@ -123,8 +126,9 @@ def delete_music():
                 os.remove('playlist/'+i)
             except OSError:
                 pass
+        print('Deleted')
     except:
-        print("delete")
+        print("Not delete")
 
 
 def send_feedback():
@@ -139,7 +143,7 @@ def send_feedback():
         netSpeed = spd_test.download()
     except:
         netSpeed = '0'
-        print('spdtest_error')##
+        print('Speed test error...')##
 
     try:
         #print('url try')##
@@ -154,9 +158,9 @@ def send_feedback():
                 'playlist':str(music_finish)
                 }
         x = requests.post(url, data = myobj)
-        #print(x.text)##
+        print('Send feedback')
     except:
-        print('request fail')
+        print('Send feedback fail...')
 
 
 class FeedbackSend(threading.Thread):
@@ -209,7 +213,7 @@ if __name__ == "__main__":
             net = False
     
     try: 
-        url = 'http://128.199.247.96:3000/api/music/getmusicloop/10000000fb2a2f51'
+        url = 'http://128.199.247.96:3000/api/music/getmusicloop/'+getserial()
         r = requests.get(url,allow_redirects=True)
        # print('playlistresq:'+r.text)
         with open("music.json", "w") as output:
