@@ -78,6 +78,8 @@ EndSection
 
 # install this pkg
 
+```sudo apt-get install python3-alsaaudio ```
+
 ```sudo pip3 install psutil ```
 
 ```sudo pip3 install requests ```
