@@ -73,7 +73,7 @@ class RequestThread(threading.Thread):
                 print('Requested')
                 print('Volume =', current_volume)
             except:
-                print("Request error...")
+                print("Request fail...")
 
 
 class BreakChange(threading.Thread):
@@ -233,7 +233,7 @@ if __name__ == "__main__":
         volume = alsaaudio.Mixer()
         current_volume = volume.getvolume()
         volume.setvolume(r_off['volume'])
-        print(current_volume)
+        print('volume =', current_volume)
     except:
         with open('music.json') as f:
             r_off = json.load(f)
