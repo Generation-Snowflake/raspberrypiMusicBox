@@ -271,6 +271,10 @@ Open `/lib/modprobe.d/aliases.conf` and comment out the line `options snd-usb-au
 
 # Hot-install
 
+```sudo rm -rf raspberrypiMusicBox/```
+
+```git clone https://github.com/Generation-Snowflake/raspberrypiMusicBox.git```
+
 ```sudo apt-get install python3-alsaaudio ```
 
 `sudo crontab -e `
@@ -316,7 +320,11 @@ WantedBy=multi-user.target
 
 1.Disable onboard audio
 
-Open `sudo nano /etc/modprobe.d/raspi-blacklist.conf and add `blacklist snd_bcm2835`.`
+Open `sudo nano /etc/modprobe.d/raspi-blacklist.conf`
+
+and add 
+
+`blacklist snd_bcm2835`
 
 2.Allow the USB audio device to be the default device.
 
