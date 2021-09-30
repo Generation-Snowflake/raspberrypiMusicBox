@@ -312,3 +312,12 @@ WantedBy=multi-user.target
 
 ```sudo systemctl daemon-reload```
 
+# วิธีปิดตัว AUX ไปใช้ตัว USB แทน
+
+1.Disable onboard audio
+
+Open `sudo nano /etc/modprobe.d/raspi-blacklist.conf and add `blacklist snd_bcm2835`.`
+
+2.Allow the USB audio device to be the default device.
+
+Open `sudo nano /lib/modprobe.d/aliases.conf` and comment out the line `options snd-usb-audio index=-2`
