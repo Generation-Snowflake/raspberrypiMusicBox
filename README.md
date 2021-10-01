@@ -328,4 +328,10 @@ and add
 
 2.Allow the USB audio device to be the default device.
 
-Open `sudo nano /lib/modprobe.d/aliases.conf` and comment out the line `options snd-usb-audio index=-2`
+Open 
+
+`sudo nano /lib/modprobe.d/aliases.conf` 
+
+and comment out the line 
+
+`options snd-usb-audio index=-2`
