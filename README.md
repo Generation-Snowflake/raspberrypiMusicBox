@@ -320,7 +320,9 @@ WantedBy=multi-user.target
 
 1.Disable onboard audio
 
-Open `sudo nano /etc/modprobe.d/raspi-blacklist.conf`
+Open 
+
+`sudo nano /etc/modprobe.d/raspi-blacklist.conf`
 
 and add 
 
